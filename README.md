@@ -1,57 +1,25 @@
-```js
-class Signaling {
-  connect() {}
-  produce() {}
-  stop() {}
-}
-class Recorder {
-  state = "new"; // "initizalized" | "started" | "stopped"
+# skyway-recording-sdk
 
-  async initialize({ routerCap, connectParams }) {
-    this._device = new Device();
-    await this._device.load(routerCap);
-    this._transport = this._device.createSendTransport(tranportId, connectParams);
-    this._transport.on("connect", this._signaling.connect);
-    this._transport.on("produce", this._signaling.produce);
-  }
-  async start(track) {
-    const producer = await this._transpport.produce(track);
-    return producer.id
-  }
-  async stop() {
-    await this._signaling.stop();
-  }
-}
-```
-
-```js
-async createRecorder(apikey, credential) {
-  // todo: validate apikey
-  // todo: validate credential
-  const res = await fetch(`${recordingLB}?apikey=${apikey}`);
-  const {
-    sessionToken,
-    fqdn,
-    routerCap,
-    connectParams
-  } = await res.json();
-
-  const signaling = new Signaling({ sessionToken, fqdn });
-  const recorder = new Recorder(signaling);
-  await record.initialize({ routerCap, connectParams })
-  return recorder;
-}
-```
-
+## API
 ```js
 import { createRecorder } from "skyway-js-recorder";
 
-const recorder = await createRecorder(apikey, credential);
-recorder.start(track);
-recorder.stop();
+(async () => {
+  const apiKey = "5bea388b-3f95-4e1e-acb5-a34efdd0c480";
+  const recorder = await createRecorder(apiKey);
 
-// throws: need another recorder
-recorder.start();
-// except for calling stop()
-recorder.on("stop", () => {});
+  const track = await navigator.mediaDevices
+    .getUserMedia({ audio: true })
+    .then(s => s.getTracks()[0]);
+
+  const res = await recorder.start(track);
+  console.log(`${res.id}.ogg is now recording...`);
+
+
+  // ...
+
+  recorder.stop();
+  console.log("recording is stopped");
+  console.log("uploading will be started soon...");
+})();
 ```
