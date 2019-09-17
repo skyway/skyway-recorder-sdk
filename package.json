@@ -1,0 +1,16 @@
+{
+  "name": "skyway-js-recording",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/skyway-recording.js",
+  "module": "src/index.js",
+  "types": "skyway-js-recording.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "NTT Communications Corp.",
+  "license": "MIT",
+  "dependencies": {
+    "mediasoup-client": "^3.2.5"
+  }
+}
