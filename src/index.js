@@ -15,7 +15,7 @@ export async function createRecorder(apiKey, credential) {
   const signaling = new Signaling(fqdn, { "X-Session-Token": sessionToken });
 
   const client = new Client(signaling);
-  await client.setup({ routerRtpCapabilities, transportInfo });
+  await client._setup({ routerRtpCapabilities, transportInfo });
 
   return client;
 }

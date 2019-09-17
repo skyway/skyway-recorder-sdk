@@ -9,7 +9,7 @@ export default class Recorder {
     this._transport = null;
   }
 
-  async setup({ routerRtpCapabilities, transportInfo }) {
+  async _setup({ routerRtpCapabilities, transportInfo }) {
     if (this._transport !== null) return;
 
     await this._device.load({ routerRtpCapabilities });
@@ -25,6 +25,7 @@ export default class Recorder {
           callback();
         } catch (err) {
           errback(err);
+          // TODO: throw
         }
       }
     );
@@ -33,10 +34,12 @@ export default class Recorder {
       "produce",
       async ({ kind, rtpParameters }, callback, errback) => {
         try {
+          // server side producerId
           const { id } = await this._signaling.produce({ kind, rtpParameters });
           callback({ id });
         } catch (err) {
           errback(err);
+          // TODO: throw
         }
       }
     );
