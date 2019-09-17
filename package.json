@@ -3,14 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/skyway-recording.js",
-  "module": "src/index.js",
   "types": "skyway-js-recording.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "rollup -c -w",
+    "build": "rollup -c"
   },
   "author": "NTT Communications Corp.",
   "license": "MIT",
   "dependencies": {
     "mediasoup-client": "^3.2.5"
+  },
+  "devDependencies": {
+    "rollup": "^1.21.4",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-resolve": "^5.2.0"
   }
 }
