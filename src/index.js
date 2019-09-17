@@ -1,5 +1,5 @@
 import Signaling from "./signaling";
-import Recorder from "./recorder";
+import Client from "./client";
 
 export async function createRecorder(apiKey, credential) {
   const preSignaling = new Signaling("http://localhost:8080", {});
@@ -11,9 +11,11 @@ export async function createRecorder(apiKey, credential) {
     transportInfo
   } = await preSignaling.initialize(apiKey, credential);
 
+  // create new one w/ FQDN and additional header
   const signaling = new Signaling(fqdn, { "X-Session-Token": sessionToken });
-  const recorder = new Recorder(signaling);
-  await recorder.setup({ routerRtpCapabilities, transportInfo });
 
-  return recorder;
+  const client = new Client(signaling);
+  await client.setup({ routerRtpCapabilities, transportInfo });
+
+  return client;
 }

@@ -10,6 +10,7 @@ export default class Signaling {
       apiKey,
       credential
     });
+
     // TODO: then(res => res.error)
     // TODO: catch()
     return res;
@@ -31,6 +32,7 @@ export default class Signaling {
 
   async start(params) {
     const res = await this._rest.postJSON("/record/start", params);
+
     // TODO: then(res => res.error)
     // TODO: catch()
     return res;
