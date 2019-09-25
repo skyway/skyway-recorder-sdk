@@ -1,6 +1,6 @@
 import { Device } from "mediasoup-client";
 
-// TODO: extends EventEmitter to notify transport close
+// TODO: extends EventEmitter to notify transport close?
 export default class Recorder {
   constructor(signaling) {
     this._signaling = signaling;
