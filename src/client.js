@@ -15,6 +15,7 @@ export default class Recorder {
     await this._device.load({ routerRtpCapabilities });
 
     // TODO: STUN/TURN
+    // transportInfo.iceServers = [{ urls: "stun:stun.l.google.com:19302" }];
     this._transport = this._device.createSendTransport(transportInfo);
 
     this._transport.once(
@@ -55,6 +56,15 @@ export default class Recorder {
     const res = await this._signaling.start({ producerId: this._producer.id });
     this._state = "recording";
 
+    this._producer.on("transportclose", () => {
+      // TODO: emit(stop);
+      console.warn("transportclose");
+    });
+    this._producer.on("trackended", () => {
+      // TODO: this.stop() and emit(stop);
+      console.warn("trackended");
+    });
+
     return res;
   }
 
@@ -64,5 +74,7 @@ export default class Recorder {
     this._producer.close();
     this._transport.close();
     this._state = "closed";
+
+    // TODO: this._signaling.stop();
   }
 }
