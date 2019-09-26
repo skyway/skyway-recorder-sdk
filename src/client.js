@@ -1,18 +1,15 @@
-import { Device } from "mediasoup-client";
-
 // TODO: extends EventEmitter to notify transport close?
 export default class Recorder {
-  constructor(signaling) {
+  constructor({ device, signaling }) {
+    this._device = device;
     this._signaling = signaling;
+
     this._state = "new";
-    this._device = new Device();
     this._transport = null;
   }
 
-  async _setup({ routerRtpCapabilities, transportInfo }) {
+  async _setupTransport({ transportInfo }) {
     if (this._transport !== null) return;
-
-    await this._device.load({ routerRtpCapabilities });
 
     // TODO: STUN/TURN
     // transportInfo.iceServers = [{ urls: "stun:stun.l.google.com:19302" }];
@@ -44,6 +41,13 @@ export default class Recorder {
         }
       }
     );
+
+    this._transport.on("connectionstatechange", state => {
+      console.warn("connState", state);
+      if (state === "disconnected") {
+        // TODO: emit(stop)
+      }
+    });
   }
 
   async start(track) {
@@ -52,9 +56,10 @@ export default class Recorder {
     if (!this._device.canProduce("audio")) throw new Error("TODO");
     if (this._state !== "new") throw new Error("TODO: can not reuse");
 
+    this._state = "recording";
+
     this._producer = await this._transport.produce({ track });
     const res = await this._signaling.start({ producerId: this._producer.id });
-    this._state = "recording";
 
     this._producer.on("transportclose", () => {
       // TODO: emit(stop);
@@ -71,9 +76,10 @@ export default class Recorder {
   async stop() {
     if (this._state !== "recording") return;
 
+    this._state = "closed";
+
     this._producer.close();
     this._transport.close();
-    this._state = "closed";
 
     await this._signaling.stop();
   }
