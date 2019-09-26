@@ -6,6 +6,7 @@ export default class Recorder {
 
     this._state = "new";
     this._transport = null;
+    this._pingPongTimer = null;
   }
 
   async _setupTransport({ transportInfo }) {
@@ -43,9 +44,9 @@ export default class Recorder {
     );
 
     this._transport.on("connectionstatechange", state => {
-      console.warn("connState", state);
       if (state === "disconnected") {
         // TODO: emit(stop)
+        console.warn("connState", state);
       }
     });
   }
@@ -60,6 +61,8 @@ export default class Recorder {
 
     this._producer = await this._transport.produce({ track });
     const res = await this._signaling.start({ producerId: this._producer.id });
+
+    this._pingPongTimer = setInterval(() => this._signaling.ping(), 1000 * 15); // 15sec
 
     this._producer.on("transportclose", () => {
       // TODO: emit(stop);
@@ -81,6 +84,7 @@ export default class Recorder {
     this._producer.close();
     this._transport.close();
 
+    clearInterval(this._pingPongTimer);
     await this._signaling.stop();
   }
 }
