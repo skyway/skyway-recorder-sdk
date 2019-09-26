@@ -1,6 +1,11 @@
-// TODO: extends EventEmitter to notify transport close?
-export default class Recorder {
+import EventEmitter from "eventemitter3";
+
+const pingPongInterval = 1000 * 15; // 15sec
+
+export default class Recorder extends EventEmitter {
   constructor({ device, signaling }) {
+    super();
+
     this._device = device;
     this._signaling = signaling;
 
@@ -43,10 +48,10 @@ export default class Recorder {
       }
     );
 
-    this._transport.on("connectionstatechange", state => {
+    this._transport.on("connectionstatechange", async state => {
       if (state === "disconnected") {
-        // TODO: emit(stop)
-        console.warn("connState", state);
+        this.stop();
+        this.emit("abort", { reason: "Disconnected from server." });
       }
     });
   }
@@ -54,24 +59,26 @@ export default class Recorder {
   async start(track) {
     if (!track) throw new Error("TODO");
     if (track.kind !== "audio") throw new Error("TODO");
-    if (!this._device.canProduce("audio")) throw new Error("TODO");
     if (this._state !== "new") throw new Error("TODO: can not reuse");
 
     this._state = "recording";
 
     this._producer = await this._transport.produce({ track });
+
+    this._producer.once("transportclose", () => {
+      this.stop();
+      this.emit("abort", { reason: "Transport closed." });
+    });
+    this._producer.once("trackended", () => {
+      this.stop();
+      this.emit("abort", { reason: "Track ended." });
+    });
+
     const res = await this._signaling.start({ producerId: this._producer.id });
-
-    this._pingPongTimer = setInterval(() => this._signaling.ping(), 1000 * 15); // 15sec
-
-    this._producer.on("transportclose", () => {
-      // TODO: emit(stop);
-      console.warn("transportclose");
-    });
-    this._producer.on("trackended", () => {
-      // TODO: this.stop() and emit(stop);
-      console.warn("trackended");
-    });
+    this._pingPongTimer = setInterval(
+      () => this._signaling.ping(),
+      pingPongInterval
+    );
 
     return res;
   }
