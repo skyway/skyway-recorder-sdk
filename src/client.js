@@ -68,13 +68,13 @@ export default class Recorder {
     return res;
   }
 
-  stop() {
+  async stop() {
     if (this._state !== "recording") return;
 
     this._producer.close();
     this._transport.close();
     this._state = "closed";
 
-    // TODO: this._signaling.stop();
+    await this._signaling.stop();
   }
 }
