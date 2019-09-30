@@ -2,18 +2,22 @@ import { Device } from "mediasoup-client";
 import Signaling from "./signaling";
 import Client from "./client";
 
-export async function createRecorder(apiKey, credential) {
+export async function createRecorder(apiKey, credential = null) {
+  // TODO: validate apiKey
+
   const device = new Device();
 
   // TODO: fix url
-  const preSignaling = new Signaling("http://localhost:8080/v1", {});
+  const preSignaling = new Signaling("http://localhost:8080/v1", {
+    "X-Api-Key": apiKey
+  });
 
   const {
     fqdn,
     sessionToken,
     routerRtpCapabilities,
     transportInfo
-  } = await preSignaling.initialize({ apiKey, credential });
+  } = await preSignaling.initialize({ credential });
 
   await device.load({ routerRtpCapabilities });
 
