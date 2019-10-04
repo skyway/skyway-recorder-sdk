@@ -27,7 +27,7 @@ export default class Signaling {
   }
 
   async ping() {
-    const res = await this._rest.postJSON("/record/ping", {});
+    const res = await this._rest.getJSON("/record/ping");
     return res;
   }
 
