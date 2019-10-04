@@ -1,9 +1,9 @@
-import Rest from "./rest";
+const pingPongInterval = 1000 * 15; // 15sec
 
-// TODO: really need this...?
 export default class Signaling {
-  constructor(baseUrl, headers) {
-    this._rest = new Rest(baseUrl, headers);
+  constructor(rest) {
+    this._rest = rest;
+    this._pingPongTimer = null;
   }
 
   async initialize(params) {
@@ -23,16 +23,20 @@ export default class Signaling {
 
   async start(params) {
     const res = await this._rest.postJSON("/record/start", params);
-    return res;
-  }
 
-  async ping() {
-    const res = await this._rest.getJSON("/record/ping");
+    this._pingPongTimer = setInterval(() => this._ping(), pingPongInterval);
+
     return res;
   }
 
   async stop() {
+    clearInterval(this._pingPongTimer);
     const res = await this._rest.postJSON("/record/stop", {});
+    return res;
+  }
+
+  async _ping() {
+    const res = await this._rest.getJSON("/record/ping");
     return res;
   }
 }

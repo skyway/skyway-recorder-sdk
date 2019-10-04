@@ -1,7 +1,5 @@
 import EventEmitter from "eventemitter3";
 
-const pingPongInterval = 1000 * 15; // 15sec
-
 export default class Recorder extends EventEmitter {
   constructor({ device, signaling }) {
     super();
@@ -11,7 +9,6 @@ export default class Recorder extends EventEmitter {
 
     this._state = "new";
     this._transport = null;
-    this._pingPongTimer = null;
   }
 
   async _setupTransport({ transportInfo }) {
@@ -75,10 +72,6 @@ export default class Recorder extends EventEmitter {
     });
 
     const res = await this._signaling.start({ producerId: this._producer.id });
-    this._pingPongTimer = setInterval(
-      () => this._signaling.ping(),
-      pingPongInterval
-    );
 
     return res;
   }
@@ -91,7 +84,6 @@ export default class Recorder extends EventEmitter {
     this._producer.close();
     this._transport.close();
 
-    clearInterval(this._pingPongTimer);
     await this._signaling.stop();
   }
 }
