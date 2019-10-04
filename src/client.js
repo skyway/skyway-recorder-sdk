@@ -13,6 +13,45 @@ export default class Recorder extends EventEmitter {
     this._transport = null;
   }
 
+  async start(track) {
+    if (!track) throw new Error("TODO");
+    if (track.kind !== "audio") throw new Error("TODO");
+    if (this._state !== "new") throw new Error("TODO: can not reuse");
+    if (!this._device.canProduce("audio")) throw new Error("TODO");
+
+    this._state = "recording";
+
+    await this._setupTransport();
+    this._producer = await this._transport.produce({ track });
+
+    this._producer.once("transportclose", () => {
+      this.stop();
+      this.emit("abort", { reason: "Transport closed." });
+    });
+    this._producer.once("trackended", () => {
+      this.stop();
+      this.emit("abort", { reason: "Track ended." });
+    });
+
+    const res = await this._signaling.start(
+      { producerId: this._producer.id },
+      pingPongInterval
+    );
+
+    return res;
+  }
+
+  async stop() {
+    if (this._state !== "recording") throw new Error("Not yet started");
+
+    this._state = "closed";
+
+    this._producer.close();
+    this._transport.close();
+
+    await this._signaling.stop();
+  }
+
   async _setupTransport() {
     // TODO: STUN/TURN
     // transportInfo.iceServers = [{ urls: "stun:stun.l.google.com:19302" }];
@@ -51,44 +90,5 @@ export default class Recorder extends EventEmitter {
         this.emit("abort", { reason: "Disconnected from server." });
       }
     });
-  }
-
-  async start(track) {
-    if (!track) throw new Error("TODO");
-    if (track.kind !== "audio") throw new Error("TODO");
-    if (this._state !== "new") throw new Error("TODO: can not reuse");
-    if (!this._device.canProduce("audio")) throw new Error("TODO");
-
-    this._state = "recording";
-
-    await this._setupTransport();
-    this._producer = await this._transport.produce({ track });
-
-    this._producer.once("transportclose", () => {
-      this.stop();
-      this.emit("abort", { reason: "Transport closed." });
-    });
-    this._producer.once("trackended", () => {
-      this.stop();
-      this.emit("abort", { reason: "Track ended." });
-    });
-
-    const res = await this._signaling.start(
-      { producerId: this._producer.id },
-      pingPongInterval
-    );
-
-    return res;
-  }
-
-  async stop() {
-    if (this._state !== "recording") return;
-
-    this._state = "closed";
-
-    this._producer.close();
-    this._transport.close();
-
-    await this._signaling.stop();
   }
 }
