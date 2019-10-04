@@ -1,5 +1,5 @@
 import EventEmitter from "eventemitter3";
-import { pingPongInterval } from "./constants";
+import { pingPongInterval } from "./util/constants";
 
 export default class Recorder extends EventEmitter {
   constructor({ device, signaling, transportInfo }) {

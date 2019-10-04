@@ -1,8 +1,8 @@
 import { Device } from "mediasoup-client";
 import Signaling from "./signaling";
 import Client from "./client";
-import Rest from "./rest";
-import { recordingServerHost } from "./constants";
+import Rest from "./util/rest";
+import { recordingServerHost } from "./util/constants";
 
 export async function createRecorder(apiKey, credential = null) {
   // TODO: validate apiKey
