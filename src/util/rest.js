@@ -15,8 +15,9 @@ export default class Rest {
       )
     });
 
-    const json = await res.json();
-    return json;
+    const data = await res.json();
+    const status = res.status;
+    return { status, data };
   }
 
   async postJSON(path, body) {
@@ -31,7 +32,8 @@ export default class Rest {
       body: JSON.stringify(body)
     });
 
-    const json = await res.json();
-    return json;
+    const data = await res.json();
+    const status = res.status;
+    return { status, data };
   }
 }
