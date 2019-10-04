@@ -2,9 +2,8 @@ import { Device } from "mediasoup-client";
 import Signaling from "./signaling";
 import Client from "./client";
 import Rest from "./rest";
-
-// TODO: fix url
-const recordingServerHost = "http://localhost:8080/v1";
+import { recordingServerHost } from "./constants";
+import pkg from "../package";
 
 export async function createRecorder(apiKey, credential = null) {
   // TODO: validate apiKey
@@ -25,8 +24,6 @@ export async function createRecorder(apiKey, credential = null) {
   const device = new Device();
   await device.load({ routerRtpCapabilities });
 
-  if (!device.canProduce("audio")) throw new Error("TODO");
-
   // create new one w/ FQDN and additional header
   const signaling = new Signaling(
     new Rest(`${fqdn}/v1`, {
@@ -35,8 +32,8 @@ export async function createRecorder(apiKey, credential = null) {
     })
   );
 
-  const client = new Client({ device, signaling });
-  await client._setupTransport({ transportInfo });
-
+  const client = new Client({ device, signaling, transportInfo });
   return client;
 }
+
+export const version = pkg.version;

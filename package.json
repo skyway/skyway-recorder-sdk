@@ -6,7 +6,9 @@
   "types": "skyway-js-recording.d.ts",
   "scripts": {
     "dev": "rollup -c -w",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "test": "karma start",
+    "test:watch": "karma start --no-single-run --auto-watch --no-browsers"
   },
   "author": "NTT Communications Corp.",
   "license": "MIT",
@@ -15,6 +17,13 @@
     "mediasoup-client": "^3.2.5"
   },
   "devDependencies": {
+    "fetch-mock": "^7.4.0",
+    "jasmine": "^3.5.0",
+    "karma": "^4.3.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-jasmine": "^2.0.1",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-rollup-preprocessor": "^7.0.2",
     "rollup": "^1.21.4",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-json": "^4.0.0",

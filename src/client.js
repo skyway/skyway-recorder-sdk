@@ -1,22 +1,21 @@
 import EventEmitter from "eventemitter3";
 
 export default class Recorder extends EventEmitter {
-  constructor({ device, signaling }) {
+  constructor({ device, signaling, transportInfo }) {
     super();
 
     this._device = device;
     this._signaling = signaling;
+    this._transportInfo = transportInfo;
 
     this._state = "new";
     this._transport = null;
   }
 
-  async _setupTransport({ transportInfo }) {
-    if (this._transport !== null) return;
-
+  async _setupTransport() {
     // TODO: STUN/TURN
     // transportInfo.iceServers = [{ urls: "stun:stun.l.google.com:19302" }];
-    this._transport = this._device.createSendTransport(transportInfo);
+    this._transport = this._device.createSendTransport(this._transportInfo);
 
     this._transport.once(
       "connect",
@@ -57,9 +56,11 @@ export default class Recorder extends EventEmitter {
     if (!track) throw new Error("TODO");
     if (track.kind !== "audio") throw new Error("TODO");
     if (this._state !== "new") throw new Error("TODO: can not reuse");
+    if (!this._device.canProduce("audio")) throw new Error("TODO");
 
     this._state = "recording";
 
+    await this._setupTransport();
     this._producer = await this._transport.produce({ track });
 
     this._producer.once("transportclose", () => {
