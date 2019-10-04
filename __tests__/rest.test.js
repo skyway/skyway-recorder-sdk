@@ -48,7 +48,7 @@ describe("getJSON()", () => {
   });
 });
 
-fdescribe("postJSON()", () => {
+describe("postJSON()", () => {
   it("should POST specified path", async () => {
     fetchMock.postOnce("*", { ok: 1 });
 
