@@ -1,18 +1,12 @@
-import { version, createRecorder } from "../src/index";
+import { createRecorder } from "../src/index";
 import Client from "../src/client";
 import { recordingServerHost } from "../src/constants";
 import { initializeResponse } from "./fixture";
 const { fetchMock } = window;
 
-afterEach(fetchMock.reset);
-
-describe("version", () => {
-  it("shoud be exported", () => {
-    expect(typeof version).toBe("string");
-  });
-});
-
 describe("createRecorder()", () => {
+  afterEach(fetchMock.reset);
+
   it("should return recorder client", async () => {
     fetchMock.postOnce(`${recordingServerHost}/initialize`, initializeResponse);
 

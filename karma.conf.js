@@ -1,3 +1,4 @@
+const { plugins } = require("./rollup.config");
 module.exports = config =>
   config.set({
     logLevel: config.LOG_WARN,
@@ -15,12 +16,7 @@ module.exports = config =>
       "./__tests__/**/*.test.js": ["rollup"]
     },
     rollupPreprocessor: {
-      plugins: [
-        require("rollup-plugin-json")(),
-        require("rollup-plugin-node-builtins")(),
-        require("rollup-plugin-node-resolve")({ browser: true }),
-        require("rollup-plugin-commonjs")()
-      ],
+      plugins,
       output: {
         format: "iife",
         sourcemap: "inline"

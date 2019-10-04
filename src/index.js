@@ -3,7 +3,6 @@ import Signaling from "./signaling";
 import Client from "./client";
 import Rest from "./rest";
 import { recordingServerHost } from "./constants";
-import pkg from "../package";
 
 export async function createRecorder(apiKey, credential = null) {
   // TODO: validate apiKey
@@ -35,5 +34,3 @@ export async function createRecorder(apiKey, credential = null) {
   const client = new Client({ device, signaling, transportInfo });
   return client;
 }
-
-export const version = pkg.version;
