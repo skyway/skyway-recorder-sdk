@@ -1,6 +1,6 @@
 import { createRecorder } from "../src/index";
 import Client from "../src/client";
-import { recordingServerHost } from "../src/constants";
+import { recordingServerHost } from "../src/util/constants";
 import { initializeResponse } from "./fixture";
 const { fetchMock } = window;
 

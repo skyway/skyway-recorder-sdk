@@ -1,4 +1,4 @@
-import Rest from "../src/rest";
+import Rest from "../src/util/rest";
 const { fetchMock } = window;
 
 afterEach(fetchMock.reset);
