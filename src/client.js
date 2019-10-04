@@ -1,4 +1,5 @@
 import EventEmitter from "eventemitter3";
+import { pingPongInterval } from "./constants";
 
 export default class Recorder extends EventEmitter {
   constructor({ device, signaling, transportInfo }) {
@@ -72,7 +73,10 @@ export default class Recorder extends EventEmitter {
       this.emit("abort", { reason: "Track ended." });
     });
 
-    const res = await this._signaling.start({ producerId: this._producer.id });
+    const res = await this._signaling.start(
+      { producerId: this._producer.id },
+      pingPongInterval
+    );
 
     return res;
   }

@@ -1,5 +1,3 @@
-const pingPongInterval = 1000 * 15; // 15sec
-
 export default class Signaling {
   constructor(rest) {
     this._rest = rest;
@@ -21,22 +19,18 @@ export default class Signaling {
     return res;
   }
 
-  async start(params) {
+  async start(params, intervalMs) {
     const res = await this._rest.postJSON("/record/start", params);
-
-    this._pingPongTimer = setInterval(() => this._ping(), pingPongInterval);
-
+    this._pingPongTimer = setInterval(
+      () => this._rest.getJSON("/record/ping"),
+      intervalMs
+    );
     return res;
   }
 
   async stop() {
     clearInterval(this._pingPongTimer);
     const res = await this._rest.postJSON("/record/stop", {});
-    return res;
-  }
-
-  async _ping() {
-    const res = await this._rest.getJSON("/record/ping");
     return res;
   }
 }
