@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Test</title>
+</head>
+<body>
+  <button>start</button>
+  <button>stop</button>
+  <script src="./dist/skyway-recorder.js"></script>
+  <script>
+    const { createRecorder } = SkyWayRecorder;
+
+    (async () => {
+      const apiKey = "5bea388b-3f95-4e1e-acb5-a34efdd0c480";
+      const recorder = await createRecorder(apiKey);
+      console.warn(recorder);
+
+      const track = await navigator.mediaDevices.getUserMedia({ audio: 1 }).then(s => s.getTracks()[0]);
+      console.warn(track);
+
+      const [$start, $stop] = document.querySelectorAll("button");
+
+      $start.onclick = () => recorder.start(track).then(res => console.warn("started", res));
+      $stop.onclick = () => recorder.stop().then(() => console.warn("stopped"));
+    })();
+  </script>
+</body>
+</html>

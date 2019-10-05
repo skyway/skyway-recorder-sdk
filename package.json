@@ -5,8 +5,8 @@
   "main": "dist/skyway-recording.js",
   "types": "skyway-js-recording.d.ts",
   "scripts": {
-    "dev": "rollup -c -w",
-    "build": "rollup -c",
+    "build": "NODE_ENV=production webpack",
+    "dev": "webpack -w",
     "test": "karma start",
     "test:watch": "karma start --no-single-run --auto-watch --no-browsers"
   },
@@ -24,10 +24,7 @@
     "karma-jasmine": "^2.0.1",
     "karma-mocha-reporter": "^2.2.5",
     "karma-rollup-preprocessor": "^7.0.2",
-    "rollup": "^1.21.4",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-node-builtins": "^2.1.2",
-    "rollup-plugin-node-resolve": "^5.2.0"
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9"
   }
 }
