@@ -1,130 +1,87 @@
-import Signaling from "../src/signaling";
-import Rest from "../src/util/rest";
+const lolex = require("lolex");
+const Signaling = require("../src/signaling");
+const Rest = require("../src/util/rest");
+
+jest.mock("../src/util/rest");
+
+let rest;
+let signaling;
+beforeEach(() => {
+  rest = new Rest();
+  signaling = new Signaling(rest);
+  rest.getJSON.mockResolvedValue({ status: 200, data: {} });
+  rest.postJSON.mockResolvedValue({ status: 200, data: { ok: 1 } });
+});
+afterEach(() => {
+  rest.getJSON.mockRestore();
+  rest.postJSON.mockRestore();
+});
 
 describe("initialize()", () => {
-  it("should call rest", async () => {
-    const rest = new Rest();
-    const spy = spyOn(rest, "postJSON").and.resolveTo({
-      status: 200,
-      data: { ok: 1 }
-    });
-
-    const signaling = new Signaling(rest);
+  test("should call rest", async () => {
     const res = await signaling.initialize({ a: 1 });
 
-    expect(spy).toHaveBeenCalledWith("/initialize", { a: 1 });
+    expect(rest.postJSON).toHaveBeenCalledWith("/initialize", { a: 1 });
     expect(res).toEqual({ ok: 1 });
   });
 });
 
 describe("connect()", () => {
-  it("should call rest", async () => {
-    const rest = new Rest();
-    const spy = spyOn(rest, "postJSON").and.resolveTo({
-      status: 200,
-      data: { ok: 1 }
-    });
-
-    const signaling = new Signaling(rest);
+  test("should call rest", async () => {
     const res = await signaling.connect({ a: 1 });
 
-    expect(spy).toHaveBeenCalledWith("/transport/connect", { a: 1 });
+    expect(rest.postJSON).toHaveBeenCalledWith("/transport/connect", { a: 1 });
     expect(res).toEqual({ ok: 1 });
   });
 });
 
 describe("produce()", () => {
-  it("should call rest", async () => {
-    const rest = new Rest();
-    const spy = spyOn(rest, "postJSON").and.resolveTo({
-      status: 200,
-      data: { ok: 1 }
-    });
-
-    const signaling = new Signaling(rest);
+  test("should call rest", async () => {
     const res = await signaling.produce({ a: 1 });
 
-    expect(spy).toHaveBeenCalledWith("/transport/produce", { a: 1 });
+    expect(rest.postJSON).toHaveBeenCalledWith("/transport/produce", { a: 1 });
     expect(res).toEqual({ ok: 1 });
   });
 });
 
 describe("start()", () => {
-  it("should call rest", async () => {
-    const rest = new Rest();
-    const postSpy = spyOn(rest, "postJSON").and.resolveTo({
-      status: 200,
-      data: { ok: 1 }
-    });
-
-    const signaling = new Signaling(rest);
+  test("should call rest", async () => {
     const res = await signaling.start({ a: 1 }, 3000);
 
-    expect(postSpy).toHaveBeenCalledWith("/record/start", { a: 1 });
+    expect(rest.postJSON).toHaveBeenCalledWith("/record/start", { a: 1 });
     expect(res).toEqual({ ok: 1 });
   });
 
-  it("should call rest with interval", async () => {
-    const clock = jasmine.clock().install();
-    const rest = new Rest();
-    const getSpy = spyOn(rest, "getJSON").and.resolveTo({
-      status: 200,
-      data: {}
-    });
-    spyOn(rest, "postJSON").and.resolveTo({
-      status: 200,
-      data: {}
-    });
+  test("should call rest with interval", async () => {
+    const clock = lolex.install();
 
-    const signaling = new Signaling(rest);
     await signaling.start({ a: 1 }, 3000);
 
-    expect(getSpy).not.toHaveBeenCalled();
-
+    expect(rest.getJSON).not.toHaveBeenCalled();
     clock.tick(10000);
-    expect(getSpy).toHaveBeenCalledWith("/record/ping");
-    expect(getSpy).toHaveBeenCalledTimes(3);
+    expect(rest.getJSON).toHaveBeenCalledWith("/record/ping");
+    expect(rest.getJSON).toHaveBeenCalledTimes(3);
 
     clock.uninstall();
   });
 });
 
 describe("stop()", () => {
-  it("should call rest", async () => {
-    const rest = new Rest();
-    spyOn(rest, "getJSON").and.resolveTo({
-      status: 200,
-      data: {}
-    });
-    const postSpy = spyOn(rest, "postJSON").and.resolveTo({
-      status: 200,
-      data: { ok: 1 }
-    });
-
-    const signaling = new Signaling(rest);
+  test("should call rest", async () => {
     const res = await signaling.stop();
-    expect(postSpy).toHaveBeenCalledWith("/record/stop", {});
+
+    expect(rest.postJSON).toHaveBeenCalledWith("/record/stop", {});
     expect(res).toEqual({ ok: 1 });
   });
 
-  it("should stop interval", async () => {
-    const clock = jasmine.clock().install();
-    const rest = new Rest();
-    const getSpy = spyOn(rest, "getJSON").and.resolveTo({
-      status: 200,
-      data: {}
-    });
-    spyOn(rest, "postJSON").and.resolveTo({
-      status: 200,
-      data: {}
-    });
+  test("should stop interval", async () => {
+    const clock = lolex.install();
 
-    const signaling = new Signaling(rest);
     await signaling.start({ a: 1 }, 3000);
     await signaling.stop();
 
     clock.tick(10000);
-    expect(getSpy).not.toHaveBeenCalled();
+    expect(rest.getJSON).not.toHaveBeenCalled();
 
     clock.uninstall();
   });

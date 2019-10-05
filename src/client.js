@@ -1,7 +1,7 @@
-import EventEmitter from "eventemitter3";
-import { pingPongInterval } from "./util/constants";
+const EventEmitter = require("eventemitter3");
+const { pingPongInterval } = require("./util/constants");
 
-export default class Recorder extends EventEmitter {
+class Client extends EventEmitter {
   constructor({ device, signaling, transportInfo }) {
     super();
 
@@ -92,3 +92,5 @@ export default class Recorder extends EventEmitter {
     });
   }
 }
+
+module.exports = Client;
