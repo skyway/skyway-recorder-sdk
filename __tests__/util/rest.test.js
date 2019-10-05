@@ -1,10 +1,10 @@
-import Rest from "../src/util/rest";
-const { fetchMock } = window;
+const Rest = require("../../src/util/rest");
+const fetchMock = require("fetch-mock");
 
 afterEach(fetchMock.reset);
 
 describe("getJSON()", () => {
-  it("should GET specified path", async () => {
+  test("should GET specified path", async () => {
     fetchMock.getOnce("*", { ok: 1 });
 
     const r = new Rest("http://example.com", {});
@@ -15,7 +15,7 @@ describe("getJSON()", () => {
     expect(options.method).toBe("get");
   });
 
-  it("should extend headers", async () => {
+  test("should extend headers", async () => {
     fetchMock.getOnce("*", { ok: 1 });
 
     const r = new Rest("http://example.com", { "X-Hello": "world" });
@@ -27,7 +27,7 @@ describe("getJSON()", () => {
     expect(options.headers["Content-Type"]).toBe("application/json");
   });
 
-  it("should return JSON object w/ status", async () => {
+  test("should return JSON object w/ status", async () => {
     fetchMock.getOnce("*", { ok: 1 });
 
     const r = new Rest("http://example.com", {});
@@ -37,7 +37,7 @@ describe("getJSON()", () => {
     expect(res.status).toBe(200);
   });
 
-  it("should throw on network issue", async done => {
+  test("should throw on network issue", async done => {
     fetchMock.getOnce("*", { throws: new Error("Failed to fetch") });
 
     const r = new Rest("http://example.com", {});
@@ -49,7 +49,7 @@ describe("getJSON()", () => {
 });
 
 describe("postJSON()", () => {
-  it("should POST specified path", async () => {
+  test("should POST specified path", async () => {
     fetchMock.postOnce("*", { ok: 1 });
 
     const r = new Rest("http://example.com", {});
@@ -60,7 +60,7 @@ describe("postJSON()", () => {
     expect(options.method).toBe("post");
   });
 
-  it("should extend headers", async () => {
+  test("should extend headers", async () => {
     fetchMock.postOnce("*", { ok: 1 });
 
     const r = new Rest("http://example.com", { "X-Hello": "world" });
@@ -72,7 +72,7 @@ describe("postJSON()", () => {
     expect(options.headers["Content-Type"]).toBe("application/json");
   });
 
-  it("should request body", async () => {
+  test("should request body", async () => {
     fetchMock.postOnce("*", { ok: 1 });
 
     const r = new Rest("http://example.com", { "X-Hello": "world" });
@@ -82,7 +82,7 @@ describe("postJSON()", () => {
     expect(JSON.parse(options.body)).toEqual({ hi: "test" });
   });
 
-  it("should return JSON object w/ status", async () => {
+  test("should return JSON object w/ status", async () => {
     fetchMock.postOnce("*", { ok: 1 });
 
     const r = new Rest("http://example.com", {});
@@ -92,7 +92,7 @@ describe("postJSON()", () => {
     expect(res.status).toBe(200);
   });
 
-  it("should throw on network issue", async done => {
+  test("should throw on network issue", async done => {
     fetchMock.postOnce("*", { throws: new Error("Failed to fetch") });
 
     const r = new Rest("http://example.com", {});

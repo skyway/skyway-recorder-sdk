@@ -7,8 +7,7 @@
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "dev": "webpack -w",
-    "test": "karma start",
-    "test:watch": "karma start --no-single-run --auto-watch --no-browsers"
+    "test": "jest"
   },
   "author": "NTT Communications Corp.",
   "license": "MIT",
@@ -18,12 +17,9 @@
   },
   "devDependencies": {
     "fetch-mock": "^7.4.0",
-    "jasmine": "^3.5.0",
-    "karma": "^4.3.0",
-    "karma-chrome-launcher": "^3.1.0",
-    "karma-jasmine": "^2.0.1",
-    "karma-mocha-reporter": "^2.2.5",
-    "karma-rollup-preprocessor": "^7.0.2",
+    "jest": "^24.9.0",
+    "lolex": "^4.2.0",
+    "node-fetch": "^2.6.0",
     "webpack": "^4.41.0",
     "webpack-cli": "^3.3.9"
   }

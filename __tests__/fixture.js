@@ -1,4 +1,4 @@
-export const initializeResponse = {
+exports.initializeResponse = {
   fqdn: "http://localhost:8080",
   routerRtpCapabilities: {
     codecs: [

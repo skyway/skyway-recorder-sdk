@@ -1,7 +1,7 @@
-import Client from "../src/client";
+const Client = require("../src/client");
 
 describe("exntends EventEmitter", () => {
-  it("should inherit EventEmitter", done => {
+  test("should inherit EventEmitter", done => {
     const client = new Client({});
     client.once("foo", done);
     client.emit("foo");
@@ -9,7 +9,7 @@ describe("exntends EventEmitter", () => {
 });
 
 describe("start()", () => {
-  it("should throw if track is missing", async done => {
+  test("should throw if track is missing", async done => {
     const client = new Client({});
     await client
       .start()
@@ -21,17 +21,17 @@ describe("start()", () => {
       });
   });
 
-  it("TODO: should throw if track.kind is not audio");
-  it("TODO: should throw if already started");
-  it("TODO: should throw if device can not produce audio");
+  test.todo("TODO: should throw if track.kind is not audio");
+  test.todo("TODO: should throw if already started");
+  test.todo("TODO: should throw if device can not produce audio");
 
-  it("TODO: should call signaling start");
+  test.todo("TODO: should call signaling start");
 
-  it("TODO: should return id for recording");
+  test.todo("TODO: should return id for recording");
 });
 
 describe("stop()", () => {
-  it("should throw if not started", async done => {
+  test("should throw if not started", async done => {
     const client = new Client({});
     await client
       .stop()
@@ -43,11 +43,11 @@ describe("stop()", () => {
       });
   });
 
-  it("TODO: should call signaling stop");
+  test.todo("TODO: should call signaling stop");
 
-  it(
-    "TODO: should be called and emit(abort) when connectionstate disconnected"
+  test.todo(
+    "TODO: should be called and emtest(abort) when connectionstate disconnected"
   );
-  it("TODO: should be called and emit(abort) when transportclose");
-  it("TODO: should be called and emit(abort) when trackended");
+  test.todo("TODO: should be called and emtest(abort) when transportclose");
+  test.todo("TODO: should be called and emtest(abort) when trackended");
 });

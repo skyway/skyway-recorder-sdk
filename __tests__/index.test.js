@@ -1,23 +1,23 @@
-import { createRecorder } from "../src/index";
-import Client from "../src/client";
-import { recordingServerHost } from "../src/util/constants";
-import { initializeResponse } from "./fixture";
-const { fetchMock } = window;
+const { createRecorder } = require("../src");
+const Client = require("../src/client");
+const { recordingServerHost } = require("../src/util/constants");
+const { initializeResponse } = require("./fixture");
+const fetchMock = require("fetch-mock");
 
 describe("createRecorder()", () => {
   afterEach(fetchMock.reset);
 
-  it("should return recorder client", async () => {
+  test("should return recorder client", async () => {
     fetchMock.postOnce(`${recordingServerHost}/initialize`, initializeResponse);
 
     const client = await createRecorder();
     expect(client).toBeInstanceOf(Client);
   });
 
-  it("TODO: should throw when invalid apikey passed");
-  it("TODO: should throw when invalid credential passed");
+  test.todo("TODO: should throw when invalid apikey passed");
+  test.todo("TODO: should throw when invalid credential passed");
 
-  it("should throw when signaling returns invalid response", async done => {
+  test("should throw when signaling returns invalid response", async done => {
     fetchMock.postOnce(`${recordingServerHost}/initialize`, {});
 
     await createRecorder()
@@ -29,5 +29,5 @@ describe("createRecorder()", () => {
       });
   });
 
-  it("TODO: should throw when signaling failed by network issue");
+  test.todo("TODO: should throw when signaling failed by network issue");
 });
