@@ -1,4 +1,4 @@
-export default class Rest {
+class Rest {
   constructor(url, headers) {
     this._url = url;
     this._headers = headers;
@@ -37,3 +37,5 @@ export default class Rest {
     return { status, data };
   }
 }
+
+module.exports = Rest;

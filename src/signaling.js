@@ -1,4 +1,4 @@
-export default class Signaling {
+class Signaling {
   constructor(rest) {
     this._rest = rest;
     this._pingPongTimer = null;
@@ -35,3 +35,5 @@ export default class Signaling {
     return res.data;
   }
 }
+
+module.exports = Signaling;
