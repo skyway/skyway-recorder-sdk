@@ -1,4 +1,5 @@
 const Rest = require("../../src/util/rest");
+// easier than window.fetch = jest.fn() way...
 const fetchMock = require("fetch-mock");
 
 afterEach(fetchMock.reset);
