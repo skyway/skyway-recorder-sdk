@@ -6,22 +6,22 @@ class Signaling {
 
   async initialize(params) {
     // TODO: may rejects with failed to fetch by no-network
-    const res = await this._rest.postJSON("/initialize", params);
+    const res = await this._rest.postJSON("/initialize", params || {});
     return res.data;
   }
 
   async connect(params) {
-    const res = await this._rest.postJSON("/transport/connect", params);
+    const res = await this._rest.postJSON("/transport/connect", params || {});
     return res.data;
   }
 
   async produce(params) {
-    const res = await this._rest.postJSON("/transport/produce", params);
+    const res = await this._rest.postJSON("/transport/produce", params || {});
     return res.data;
   }
 
   async start(params, intervalMs) {
-    const res = await this._rest.postJSON("/record/start", params);
+    const res = await this._rest.postJSON("/record/start", params || {});
     this._pingPongTimer = setInterval(
       () => this._rest.getJSON("/record/ping"),
       intervalMs

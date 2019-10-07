@@ -6,20 +6,22 @@ import { createRecorder } from "skyway-js-recorder";
 
 (async () => {
   const apiKey = "5bea388b-3f95-4e1e-acb5-a34efdd0c480";
-  const recorder = await createRecorder(apiKey);
+  const client = await createRecorder(apiKey);
+
+  // if use authentication
+  // const client = await createRecorder(apiKey, { timestamp, credential });
 
   const track = await navigator.mediaDevices
     .getUserMedia({ audio: true })
     .then(s => s.getTracks()[0]);
 
-  const res = await recorder.start(track);
-  console.log(`${res.id}.ogg is now recording...`);
-
+  const res = await client.start(track);
+  console.log(`Your recording id: ${res.id} is now recording...`);
 
   // ...
 
-  recorder.stop();
-  console.log("recording is stopped");
+  await recorder.stop();
+  console.log("recording has stopped!");
   console.log("uploading will be started soon...");
 })();
 ```
