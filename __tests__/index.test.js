@@ -11,20 +11,72 @@ jest.mock("../src/signaling", () => {
   };
 });
 
+beforeEach(() => {
+  mock$initialize.mockResolvedValue(initializeResponse);
+});
 afterEach(() => {
   mock$initialize.mockRestore();
 });
 
 describe("createRecorder()", () => {
   test("should return recorder client", async () => {
-    mock$initialize.mockResolvedValueOnce(initializeResponse);
-
-    const client = await createRecorder();
+    const client = await createRecorder("fa974205-cfdc-4a68-aac0-18b6b374b4da");
     expect(client).toBeInstanceOf(Client);
   });
 
-  test.todo("TODO: should throw when invalid apikey passed");
-  test.todo("TODO: should throw when invalid credential passed");
+  test("should return recorder client w/ auth", async () => {
+    const client = await createRecorder(
+      "fa974205-cfdc-4a68-aac0-18b6b374b4da",
+      { timestamp: Date.now(), credential: "myhash" }
+    );
+    expect(client).toBeInstanceOf(Client);
+  });
+
+  test("should throw when invalid apikey passed", async done => {
+    const cases = [
+      null,
+      undefined,
+      1,
+      {},
+      true,
+      "",
+      "hoge",
+      "fa974205-cfdc-4a68-18b6b374b4da"
+    ];
+
+    for (const apiKey of cases) {
+      await createRecorder(apiKey)
+        .then(() => done.fail("should throw!"))
+        .catch(err => {
+          // TODO: expect(err).toBeInstanceOf(TodoError);
+          err;
+        });
+    }
+    done();
+  });
+
+  test("should throw when invalid auth params passed", async done => {
+    const cases = [
+      1,
+      true,
+      "hoge",
+      {},
+      { timestamp: 123 },
+      { timestamp: Date.now() },
+      { timestamp: 123, credential: "valid" },
+      { timestamp: Date.now(), credential: "" }
+    ];
+
+    for (const auth of cases) {
+      await createRecorder("fa974205-cfdc-4a68-aac0-18b6b374b4da", auth)
+        .then(() => done.fail("should throw!"))
+        .catch(err => {
+          // TODO: expect(err).toBeInstanceOf(TodoError);
+          err;
+        });
+    }
+    done();
+  });
 
   test("should throw when signaling returns invalid response", async done => {
     mock$initialize.mockResolvedValueOnce({ error: 1 });
@@ -32,11 +84,21 @@ describe("createRecorder()", () => {
     await createRecorder()
       .then(() => done.fail("should throw!"))
       .catch(err => {
-        console.log(err);
         // TODO: expect(err).toBeInstanceOf(TodoError);
+        err;
         done();
       });
   });
 
-  test.todo("TODO: should throw when signaling failed by network issue");
+  test("should throw when signaling failed by network issue", async done => {
+    mock$initialize.mockRejectedValueOnce({});
+
+    await createRecorder()
+      .then(() => done.fail("should throw!"))
+      .catch(err => {
+        // TODO: expect(err).toBeInstanceOf(TodoError);
+        err;
+        done();
+      });
+  });
 });

@@ -4,8 +4,20 @@ const Client = require("./client");
 const Rest = require("./util/rest");
 const { recordingServerHost } = require("./util/constants");
 
-exports.createRecorder = async (apiKey, credential = null) => {
-  // TODO: validate apiKey
+// copied from signaling server code
+const apiKeyRegExp = /^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/;
+const timestampRegExp = /^\d{13}$/;
+
+exports.createRecorder = async (apiKey, auth = null) => {
+  if (!apiKeyRegExp.test(apiKey))
+    throw new Error("TODO: invalid apikey format!");
+
+  if (auth) {
+    if (!timestampRegExp.test(auth.timestamp))
+      throw new Error("auth.timestamp must be a 13 digits unix tiemstamp!");
+    if (!(auth.credential && typeof auth.credential === "string"))
+      throw new Error("auth.credential must be a hash string!");
+  }
 
   const preSignaling = new Signaling(
     new Rest(recordingServerHost, {
@@ -18,7 +30,7 @@ exports.createRecorder = async (apiKey, credential = null) => {
     sessionToken,
     routerRtpCapabilities,
     transportInfo
-  } = await preSignaling.initialize({ credential });
+  } = await preSignaling.initialize(auth);
 
   const device = new Device();
   await device.load({ routerRtpCapabilities });
