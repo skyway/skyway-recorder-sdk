@@ -15,7 +15,7 @@ exports.createRecorder = async (apiKey, auth = null) => {
   if (auth) {
     if (!timestampRegExp.test(auth.timestamp))
       throw new Error("auth.timestamp must be a 13 digits unix tiemstamp!");
-    if (typeof auth.credential !== "string")
+    if (!(auth.credential && typeof auth.credential === "string"))
       throw new Error("auth.credential must be a hash string!");
   }
 
