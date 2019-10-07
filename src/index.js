@@ -25,7 +25,7 @@ exports.createRecorder = async (apiKey, credential = null) => {
 
   // create new one w/ FQDN and additional header
   const signaling = new Signaling(
-    new Rest(`${fqdn}/v1`, {
+    new Rest(`${fqdn}`, {
       "X-Session-Token": sessionToken,
       "X-Api-Key": apiKey
     })
