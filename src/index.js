@@ -14,10 +14,10 @@ exports.createRecorder = async (apiKey, options = {}) => {
 
   // default options
   const auth = options.auth || null;
-  const iceServers = options.iceServers || [];
+  const iceServers = options.iceServers || null;
   const iceTransportPolicy = options.iceTransportPolicy || "all";
 
-  if (auth) {
+  if (auth !== null) {
     if (!timestampRegExp.test(auth.timestamp))
       throw new Error("auth.timestamp must be a 13 digits unix tiemstamp!");
     if (!(auth.credential && typeof auth.credential === "string"))
@@ -38,7 +38,8 @@ exports.createRecorder = async (apiKey, options = {}) => {
   } = await preSignaling.initialize(auth);
 
   // if specified override
-  if (iceServers.length !== 0) transportInfo.iceServers = iceServers;
+  if (iceServers !== null && Array.isArray(iceServers))
+    transportInfo.iceServers = iceServers;
   // if force TURN
   if (iceTransportPolicy === "relay")
     transportInfo.iceTransportPolicy = "relay";

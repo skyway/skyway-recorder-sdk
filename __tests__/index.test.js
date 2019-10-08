@@ -105,4 +105,10 @@ describe("createRecorder(apiKey, options)", () => {
     }
     done();
   });
+
+  // iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+  test.todo("should override custom iceServers");
+  test.todo("should override empty iceServers");
+  test.todo("should override iceTransportPolicy === relay");
+  test.todo("should ignore iceTransportPolicy !== relay");
 });
