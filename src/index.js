@@ -8,7 +8,16 @@ const { recordingServerHost } = require("./util/constants");
 const apiKeyRegExp = /^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/;
 const timestampRegExp = /^\d{13}$/;
 
-exports.createRecorder = async (apiKey, auth = null) => {
+const options = {
+  auth: null,
+  iceServers: [],
+  iceTransportPolicy: "all"
+};
+
+exports.createRecorder = async (
+  apiKey,
+  { auth, iceServers, iceTransportPolicy } = options
+) => {
   if (!apiKeyRegExp.test(apiKey))
     throw new Error("TODO: invalid apikey format!");
 
@@ -31,6 +40,12 @@ exports.createRecorder = async (apiKey, auth = null) => {
     routerRtpCapabilities,
     transportInfo
   } = await preSignaling.initialize(auth);
+
+  // if specified override
+  if (iceServers.length !== 0) transportInfo.iceServers = iceServers;
+  // if force TURN
+  if (iceTransportPolicy === "relay")
+    transportInfo.iceTransportPolicy = "relay";
 
   const device = new Device();
   await device.load({ routerRtpCapabilities });
