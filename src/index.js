@@ -8,18 +8,14 @@ const { recordingServerHost } = require("./util/constants");
 const apiKeyRegExp = /^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/;
 const timestampRegExp = /^\d{13}$/;
 
-const options = {
-  auth: null,
-  iceServers: [],
-  iceTransportPolicy: "all"
-};
-
-exports.createRecorder = async (
-  apiKey,
-  { auth, iceServers, iceTransportPolicy } = options
-) => {
+exports.createRecorder = async (apiKey, options = {}) => {
   if (!apiKeyRegExp.test(apiKey))
     throw new Error("TODO: invalid apikey format!");
+
+  // default options
+  const auth = options.auth || null;
+  const iceServers = options.iceServers || [];
+  const iceTransportPolicy = options.iceTransportPolicy || "all";
 
   if (auth) {
     if (!timestampRegExp.test(auth.timestamp))
