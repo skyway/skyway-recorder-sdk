@@ -1,15 +1,41 @@
 const EventEmitter = require("eventemitter3");
+const { Device } = require("mediasoup-client");
 const { pingPongInterval } = require("./util/constants");
 
+const initializeSession = async ({ signaler, auth }) => {
+  const {
+    fqdn,
+    sessionToken,
+    routerRtpCapabilities,
+    transportInfo
+  } = await signaler.initialize({ auth });
+
+  // update
+  signaler.setUrl(fqdn);
+  signaler.addHeader("X-Session-Token", sessionToken);
+
+  return { routerRtpCapabilities, transportInfo };
+};
+
+const loadMediaSoupDevice = async ({ routerRtpCapabilities }) => {
+  const device = new Device();
+  await device.load({ routerRtpCapabilities });
+
+  if (!device.canProduce("audio")) throw new Error("TODO");
+
+  return device;
+};
+
 class Client extends EventEmitter {
-  constructor({ device, signaling, transportInfo }) {
+  constructor({ signaler, auth, iceServers, iceTransportPolicy }) {
     super();
 
-    this._device = device;
-    this._signaling = signaling;
-    this._transportInfo = transportInfo;
+    this._signaler = signaler;
+    this._authParams = auth;
+    this._iceConfiguration = { iceServers, iceTransportPolicy };
 
     this._state = "new";
+    this._device = null;
     this._transport = null;
   }
 
@@ -17,23 +43,19 @@ class Client extends EventEmitter {
     if (!track) throw new Error("TODO");
     if (track.kind !== "audio") throw new Error("TODO");
     if (this._state !== "new") throw new Error("TODO: can not reuse");
-    if (!this._device.canProduce("audio")) throw new Error("TODO");
+
+    const { routerRtpCapabilities, transportInfo } = await initializeSession({
+      signaler: this._signaler,
+      auth: this._authParams
+    });
 
     this._state = "recording";
 
-    await this._setupTransport();
-    this._producer = await this._transport.produce({ track });
+    this._device = await loadMediaSoupDevice({ routerRtpCapabilities });
+    await this._setupTransport(transportInfo);
+    await this._setupProducer(track);
 
-    this._producer.once("transportclose", () => {
-      this.stop();
-      this.emit("abort", { reason: "Transport closed." });
-    });
-    this._producer.once("trackended", () => {
-      this.stop();
-      this.emit("abort", { reason: "Track ended." });
-    });
-
-    const res = await this._signaling.start(
+    const res = await this._signaler.start(
       { producerId: this._producer.id },
       pingPongInterval
     );
@@ -49,19 +71,17 @@ class Client extends EventEmitter {
     this._producer.close();
     this._transport.close();
 
-    await this._signaling.stop();
+    await this._signaler.stop();
   }
 
-  async _setupTransport() {
-    // TODO: STUN/TURN
-    // transportInfo.iceServers = [{ urls: "stun:stun.l.google.com:19302" }];
-    this._transport = this._device.createSendTransport(this._transportInfo);
+  async _setupTransport(transportInfo) {
+    this._transport = this._device.createSendTransport(transportInfo);
 
     this._transport.once(
       "connect",
       async ({ dtlsParameters }, callback, errback) => {
         try {
-          await this._signaling.connect({ dtlsParameters });
+          await this._signaler.connect({ dtlsParameters });
           callback();
         } catch (err) {
           errback(err);
@@ -75,7 +95,7 @@ class Client extends EventEmitter {
       async ({ kind, rtpParameters }, callback, errback) => {
         try {
           // server side producerId
-          const { id } = await this._signaling.produce({ kind, rtpParameters });
+          const { id } = await this._signaler.produce({ kind, rtpParameters });
           callback({ id });
         } catch (err) {
           errback(err);
@@ -89,6 +109,19 @@ class Client extends EventEmitter {
         this.stop();
         this.emit("abort", { reason: "Disconnected from server." });
       }
+    });
+  }
+
+  async _setupProducer(track) {
+    this._producer = await this._transport.produce({ track });
+
+    this._producer.once("transportclose", () => {
+      this.stop();
+      this.emit("abort", { reason: "Transport closed." });
+    });
+    this._producer.once("trackended", () => {
+      this.stop();
+      this.emit("abort", { reason: "Track ended." });
     });
   }
 }

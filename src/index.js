@@ -1,7 +1,5 @@
-const { Device } = require("mediasoup-client");
-const Signaling = require("./signaling");
 const Client = require("./client");
-const Rest = require("./util/rest");
+const Signaler = require("./signaler");
 const { recordingServerHost } = require("./util/constants");
 
 // copied from signaling server code
@@ -17,6 +15,7 @@ exports.createRecorder = async (apiKey, options = {}) => {
   const iceServers = options.iceServers || null;
   const iceTransportPolicy = options.iceTransportPolicy || "all";
 
+  // validate options
   if (auth !== null) {
     if (!timestampRegExp.test(auth.timestamp))
       throw new Error("auth.timestamp must be a 13 digits unix tiemstamp!");
@@ -24,37 +23,15 @@ exports.createRecorder = async (apiKey, options = {}) => {
       throw new Error("auth.credential must be a hash string!");
   }
 
-  const preSignaling = new Signaling(
-    new Rest(recordingServerHost, {
-      "X-Api-Key": apiKey
-    })
-  );
+  if (iceServers !== null) {
+    if (!Array.isArray(iceServers))
+      throw new Error("iceServers should be an array!");
+  }
+  if (iceTransportPolicy !== "all") {
+    if (iceTransportPolicy !== "relay")
+      throw new Error("iceTransportPolicy should be `relay` or `all`!");
+  }
 
-  const {
-    fqdn,
-    sessionToken,
-    routerRtpCapabilities,
-    transportInfo
-  } = await preSignaling.initialize(auth);
-
-  // if specified override
-  if (iceServers !== null && Array.isArray(iceServers))
-    transportInfo.iceServers = iceServers;
-  // if force TURN
-  if (iceTransportPolicy === "relay")
-    transportInfo.iceTransportPolicy = "relay";
-
-  const device = new Device();
-  await device.load({ routerRtpCapabilities });
-
-  // create new one w/ FQDN and additional header
-  const signaling = new Signaling(
-    new Rest(`${fqdn}`, {
-      "X-Session-Token": sessionToken,
-      "X-Api-Key": apiKey
-    })
-  );
-
-  const client = new Client({ device, signaling, transportInfo });
-  return client;
+  const signaler = new Signaler({ baseUrl: recordingServerHost, apiKey });
+  return new Client({ signaler, auth, iceServers, iceTransportPolicy });
 };
