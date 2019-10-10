@@ -19,9 +19,10 @@ class Client extends EventEmitter {
   }
 
   async start(track) {
-    if (!track) throw new Error("TODO");
-    if (track.kind !== "audio") throw new Error("TODO");
-    if (this._state !== "new") throw new Error("TODO: can not reuse");
+    if (!track) throw new Error("Track is missing!");
+    if (track.kind !== "audio")
+      throw new Error("Recording video track is not supported!");
+    if (this._state !== "new") throw new Error("Already started!");
 
     const {
       routerRtpCapabilities,
@@ -30,14 +31,7 @@ class Client extends EventEmitter {
 
     const device = await createDevice({ routerRtpCapabilities });
 
-    if (!device.canProduce("audio")) throw new Error("TODO");
-
-    this._transport = createTransport({
-      device,
-      transportInfo,
-      iceServers: this._iceServers,
-      iceTransportPolicy: this._iceTransportPolicy
-    });
+    this._transport = createTransport({ device, transportInfo });
     this._handleTransportEvent();
 
     this._producer = await createProducer({
@@ -77,6 +71,13 @@ class Client extends EventEmitter {
 
     // update
     this._signaler.setUrl(fqdn).addHeader("X-Session-Token", sessionToken);
+
+    // if passed, override even if it is empty
+    if (this._iceServers) {
+      transportInfo.iceServers = this._iceServers;
+    }
+    // will be passed `relay` or default `all`
+    transportInfo.iceTransportPolicy = this._iceTransportPolicy;
 
     return { routerRtpCapabilities, transportInfo };
   }

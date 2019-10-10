@@ -4,22 +4,13 @@ exports.createDevice = async ({ routerRtpCapabilities }) => {
   const device = new Device();
   await device.load({ routerRtpCapabilities });
 
+  if (!device.canProduce("audio"))
+    throw new Error("Your device does not support to send audio!");
+
   return device;
 };
 
-exports.createTransport = ({
-  device,
-  transportInfo,
-  iceServers,
-  iceTransportPolicy
-}) => {
-  // if passed, override even if it is empty
-  if (iceServers) {
-    transportInfo.iceServers = iceServers;
-  }
-  // will be passed `relay` or default `all`
-  transportInfo.iceTransportPolicy = iceTransportPolicy;
-
+exports.createTransport = ({ device, transportInfo }) => {
   const transport = device.createSendTransport(transportInfo);
   return transport;
 };
