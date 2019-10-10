@@ -1,114 +1,83 @@
 const { createRecorder } = require("../src");
 const Client = require("../src/client");
-const { initializeResponse } = require("./fixture");
-
-// name should start with `mock`
-const mock$initialize = jest.fn();
-jest.mock("../src/signaling", () => {
-  // this means class
-  return function() {
-    return { initialize: mock$initialize };
-  };
-});
-
-beforeEach(() => {
-  mock$initialize.mockResolvedValue(initializeResponse);
-});
-afterEach(() => {
-  mock$initialize.mockRestore();
-});
 
 describe("createRecorder(apiKey)", () => {
-  test("should return recorder client", async () => {
-    const client = await createRecorder("fa974205-cfdc-4a68-aac0-18b6b374b4da");
+  test("should return client instance", () => {
+    const client = createRecorder("fa974205-cfdc-4a68-aac0-18b6b374b4da");
     expect(client).toBeInstanceOf(Client);
   });
 
-  test("should return recorder client w/ auth", async () => {
-    const client = await createRecorder(
-      "fa974205-cfdc-4a68-aac0-18b6b374b4da",
-      {
-        auth: { timestamp: Date.now(), credential: "myhash" }
-      }
-    );
-    expect(client).toBeInstanceOf(Client);
+  test("should throw if apiKey is not passed", () => {
+    expect(() => createRecorder()).toThrow("missing");
   });
 
-  test("should throw when invalid apikey passed", async done => {
+  test("should throw if apiKey is invalid format", () => {
     const cases = [
-      null,
-      undefined,
-      1,
-      {},
-      true,
       "",
-      "hoge",
-      "fa974205-cfdc-4a68-18b6b374b4da"
+      "fa974205-cfdc-4a68-aac0",
+      "fa974205-4a68-aac0-18b6b374b4da"
     ];
 
     for (const apiKey of cases) {
-      await createRecorder(apiKey)
-        .then(() => done.fail("should throw!"))
-        .catch(err => {
-          // TODO: expect(err).toBeInstanceOf(TodoError);
-          err;
-        });
+      expect(() => createRecorder(apiKey)).toThrow("format");
     }
-    done();
-  });
-
-  test("should throw when signaling returns invalid response", async done => {
-    mock$initialize.mockResolvedValueOnce({ error: 1 });
-
-    await createRecorder("fa974205-cfdc-4a68-aac0-18b6b374b4da")
-      .then(() => done.fail("should throw!"))
-      .catch(err => {
-        // TODO: expect(err).toBeInstanceOf(TodoError);
-        err;
-        done();
-      });
-  });
-
-  test("should throw when signaling failed by network issue", async done => {
-    mock$initialize.mockRejectedValueOnce({});
-
-    await createRecorder("fa974205-cfdc-4a68-aac0-18b6b374b4da")
-      .then(() => done.fail("should throw!"))
-      .catch(err => {
-        // TODO: expect(err).toBeInstanceOf(TodoError);
-        err;
-        done();
-      });
   });
 });
 
 describe("createRecorder(apiKey, options)", () => {
-  test("should throw when invalid auth params passed", async done => {
+  test("should return client instance", () => {
     const cases = [
-      1,
-      true,
-      "hoge",
-      {},
-      { timestamp: 123 },
-      { timestamp: Date.now() },
-      { timestamp: 123, credential: "valid" },
-      { timestamp: Date.now(), credential: "" }
+      { auth: { timestamp: 1234567890123, credential: "password" } },
+      { auth: { timestamp: "1234567890123", credential: "password" } },
+      { iceServers: [] },
+      { iceServers: [{ urls: "stun:example.com" }] },
+      { iceTransportPolicy: "relay" }
     ];
 
-    for (const auth of cases) {
-      await createRecorder("fa974205-cfdc-4a68-aac0-18b6b374b4da", { auth })
-        .then(() => done.fail("should throw!"))
-        .catch(err => {
-          // TODO: expect(err).toBeInstanceOf(TodoError);
-          err;
-        });
+    for (const options of cases) {
+      const client = createRecorder(
+        "fa974205-cfdc-4a68-aac0-18b6b374b4da",
+        options
+      );
+      expect(client).toBeInstanceOf(Client);
     }
-    done();
   });
 
-  // iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
-  test.todo("should override custom iceServers");
-  test.todo("should override empty iceServers");
-  test.todo("should override iceTransportPolicy === relay");
-  test.todo("should ignore iceTransportPolicy !== relay");
+  test("should throw if options.auth is invalid format", () => {
+    const cases = [
+      [{}, "timestamp must"],
+      [{ credential: "password" }, "timestamp must"],
+      [{ timestamp: 1234567890, credential: false }, "timestamp must"],
+      [{ timestamp: 1234567890123, credential: false }, "credential must"],
+      [{ timestamp: 1234567890123, credential: "" }, "credential must"]
+    ];
+
+    for (const [auth, message] of cases) {
+      expect(() =>
+        createRecorder("fa974205-cfdc-4a68-aac0-18b6b374b4da", { auth })
+      ).toThrow(message);
+    }
+  });
+
+  test("should throw if options.iceServers is invalid format", () => {
+    const cases = [{ urls: "stun:example.com" }, new Set()];
+
+    for (const iceServers of cases) {
+      expect(() =>
+        createRecorder("fa974205-cfdc-4a68-aac0-18b6b374b4da", { iceServers })
+      ).toThrow("iceServers must");
+    }
+  });
+
+  test("should throw if options.iceTransportPolicy is invalid format", () => {
+    const cases = ["foo", true, {}];
+
+    for (const iceTransportPolicy of cases) {
+      expect(() =>
+        createRecorder("fa974205-cfdc-4a68-aac0-18b6b374b4da", {
+          iceTransportPolicy
+        })
+      ).toThrow("iceTransportPolicy must");
+    }
+  });
 });
