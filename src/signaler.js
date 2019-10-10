@@ -1,21 +1,21 @@
 const fetchJSON = require("./util/fetch-json");
 
 class Signaler {
-  constructor({ baseUrl, apiKey }) {
-    this._url = baseUrl;
-    this._headers = {
-      "X-Api-Key": apiKey
-    };
+  constructor() {
+    this._url = "";
+    this._headers = {};
 
     this._pingPongTimer = null;
   }
 
   setUrl(url) {
     this._url = url;
+    return this;
   }
 
   addHeader(key, value) {
     this._headers[key] = value;
+    return this;
   }
 
   async initialize(params) {

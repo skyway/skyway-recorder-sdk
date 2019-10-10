@@ -8,9 +8,9 @@ const recordingServerHost = "http://localhost:8080";
 const apiKeyRegExp = /^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/;
 const timestampRegExp = /^\d{13}$/;
 
-exports.createRecorder = async (apiKey, options = {}) => {
+exports.createRecorder = (apiKey, options = {}) => {
   if (!apiKeyRegExp.test(apiKey))
-    throw new Error("TODO: invalid apikey format!");
+    throw new Error("API key is missing or invalid format!");
 
   // default options
   const auth = options.auth || null;
@@ -27,13 +27,16 @@ exports.createRecorder = async (apiKey, options = {}) => {
 
   if (iceServers !== null) {
     if (!Array.isArray(iceServers))
-      throw new Error("iceServers should be an array!");
+      throw new Error("iceServers must be an array!");
   }
   if (iceTransportPolicy !== "all") {
     if (iceTransportPolicy !== "relay")
-      throw new Error("iceTransportPolicy should be `relay` or `all`!");
+      throw new Error("iceTransportPolicy must be `relay` or `all`!");
   }
 
-  const signaler = new Signaler({ baseUrl: recordingServerHost, apiKey });
+  const signaler = new Signaler()
+    .setUrl(recordingServerHost)
+    .addHeader("X-Api-Key", apiKey);
+
   return new Client(signaler, { auth, iceServers, iceTransportPolicy });
 };

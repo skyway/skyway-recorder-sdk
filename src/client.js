@@ -76,8 +76,7 @@ class Client extends EventEmitter {
     } = await this._signaler.initialize(this._authParams || {});
 
     // update
-    this._signaler.setUrl(fqdn);
-    this._signaler.addHeader("X-Session-Token", sessionToken);
+    this._signaler.setUrl(fqdn).addHeader("X-Session-Token", sessionToken);
 
     return { routerRtpCapabilities, transportInfo };
   }
