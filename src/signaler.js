@@ -8,6 +8,13 @@ class Signaler {
     this._pingPongTimer = null;
   }
 
+  get attrsForTest() {
+    return {
+      url: this._url,
+      headers: { ...this._headers }
+    };
+  }
+
   setUrl(url) {
     this._url = url;
     return this;
