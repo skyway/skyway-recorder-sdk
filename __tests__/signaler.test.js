@@ -18,13 +18,26 @@ describe("setUrl()", () => {
     expect(signaler.setUrl()).toBe(signaler);
   });
 
-  test("should set url", () => {
+  test("should set url", async () => {
     const signaler = new Signaler();
 
     signaler.setUrl("http://localhost:1234");
-    expect(signaler.attrsForTest.url).toBe("http://localhost:1234");
+    await signaler.fetchJSON("GET", "/foo", {});
+    expect(mock$fetchJSON).toHaveBeenCalledWith(
+      "GET",
+      "http://localhost:1234/foo",
+      {},
+      {}
+    );
+
     signaler.setUrl("http://localhost:4567");
-    expect(signaler.attrsForTest.url).toBe("http://localhost:4567");
+    await signaler.fetchJSON("GET", "/foo", {});
+    expect(mock$fetchJSON).toHaveBeenCalledWith(
+      "GET",
+      "http://localhost:4567/foo",
+      {},
+      {}
+    );
   });
 });
 
@@ -35,113 +48,74 @@ describe("addHeader()", () => {
     expect(signaler.addHeader("key", "value")).toBe(signaler);
   });
 
-  test("should add header", () => {
+  test("should add header", async () => {
     const signaler = new Signaler();
 
     signaler.addHeader("foo", "bar");
-    expect(signaler.attrsForTest.headers).toHaveProperty("foo", "bar");
+    await signaler.fetchJSON("POST", "/foo", {});
+    expect(mock$fetchJSON).toHaveBeenCalledWith(
+      "POST",
+      "/foo",
+      { foo: "bar" },
+      {}
+    );
+
     signaler.addHeader("foo2", "bar2").addHeader("foo3", "bar3");
-    expect(signaler.attrsForTest.headers).toHaveProperty("foo", "bar");
-    expect(signaler.attrsForTest.headers).toHaveProperty("foo2", "bar2");
-    expect(signaler.attrsForTest.headers).toHaveProperty("foo3", "bar3");
+    await signaler.fetchJSON("POST", "/foo", {});
+    expect(mock$fetchJSON).toHaveBeenCalledWith(
+      "POST",
+      "/foo",
+      { foo: "bar", foo2: "bar2", foo3: "bar3" },
+      {}
+    );
   });
 });
 
-describe("initialize()", () => {
+describe("fetchJSON()", () => {
   test("should call fetchJSON()", async () => {
     const signaler = new Signaler();
-    const res = await signaler.initialize({ auth: null });
+    const res = await signaler.fetchJSON("POST", "/foo", { hi: 1 });
 
-    expect(mock$fetchJSON).toHaveBeenCalledWith(
-      "POST",
-      "/initialize",
-      {},
-      { auth: null }
-    );
+    expect(mock$fetchJSON).toHaveBeenCalledWith("POST", "/foo", {}, { hi: 1 });
+    expect(res).toEqual({ ok: 1 });
+  });
+
+  test("should call fetchJSON()", async () => {
+    const signaler = new Signaler();
+    const res = await signaler.fetchJSON("GET", "/bar", { hi: 1 });
+
+    expect(mock$fetchJSON).toHaveBeenCalledWith("GET", "/bar", {}, { hi: 1 });
     expect(res).toEqual({ ok: 1 });
   });
 });
 
-describe("connect()", () => {
-  test("should call fetchJSON()", async () => {
-    const signaler = new Signaler();
-    const res = await signaler.connect({ id: 1 });
-
-    expect(mock$fetchJSON).toHaveBeenCalledWith(
-      "POST",
-      "/transport/connect",
-      {},
-      { id: 1 }
-    );
-    expect(res).toEqual({ ok: 1 });
-  });
-});
-
-describe("produce()", () => {
-  test("should call fetchJSON()", async () => {
-    const signaler = new Signaler();
-    const res = await signaler.produce({ id: 2 });
-
-    expect(mock$fetchJSON).toHaveBeenCalledWith(
-      "POST",
-      "/transport/produce",
-      {},
-      { id: 2 }
-    );
-    expect(res).toEqual({ ok: 1 });
-  });
-});
-
-describe("start()", () => {
-  test("should call fetchJSON()", async () => {
-    const signaler = new Signaler();
-    const res = await signaler.start({ id: 3 });
-
-    expect(mock$fetchJSON).toHaveBeenCalledWith(
-      "POST",
-      "/record/start",
-      {},
-      { id: 3 }
-    );
-    expect(res).toEqual({ ok: 1 });
-  });
-
-  test("should call fetchJSON() with interval", async () => {
+describe("startPing()", () => {
+  test("should call fetchJSON() w/ interval", async () => {
     const clock = lolex.install();
 
     const signaler = new Signaler();
-    await signaler.start({ id: 3 }, 3000);
+    signaler.startPing("GET", "/ping", 3000);
 
-    expect(mock$fetchJSON).not.toHaveBeenCalledWith("GET", "/record/ping", {});
     clock.tick(10000);
-    expect(mock$fetchJSON).toHaveBeenCalledWith("GET", "/record/ping", {});
-    // start: 1, ping: 3
-    expect(mock$fetchJSON).toHaveBeenCalledTimes(1 + 3);
+    expect(mock$fetchJSON).toHaveBeenCalledWith("GET", "/ping", {});
+    expect(mock$fetchJSON).toHaveBeenCalledTimes(3);
 
     clock.uninstall();
   });
-});
 
-describe("stop()", () => {
-  test("should call fetchJSON()", async () => {
-    const signaler = new Signaler();
-    const res = await signaler.stop();
-
-    expect(mock$fetchJSON).toHaveBeenCalledWith("POST", "/record/stop", {}, {});
-    expect(res).toEqual({ ok: 1 });
-  });
-
-  test("should call fetchJSON() with interval", async () => {
+  test("should call fetchJSON() w/ interval", async () => {
     const clock = lolex.install();
 
     const signaler = new Signaler();
-    await signaler.start({ id: 3 }, 3000);
-    await signaler.stop();
+    const stop = signaler.startPing("GET", "/ping", 3000);
 
     clock.tick(10000);
-    expect(mock$fetchJSON).not.toHaveBeenCalledWith("GET", "/record/ping", {});
-    // start: 1, ping: 0, stop: 1
-    expect(mock$fetchJSON).toHaveBeenCalledTimes(1 + 1);
+    expect(mock$fetchJSON).toHaveBeenCalledWith("GET", "/ping", {});
+    expect(mock$fetchJSON).toHaveBeenCalledTimes(3);
+
+    stop();
+    clock.tick(10000);
+    expect(mock$fetchJSON).toHaveBeenCalledTimes(3);
 
     clock.uninstall();
   });

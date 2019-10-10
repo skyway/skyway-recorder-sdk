@@ -19,14 +19,13 @@ describe("constructor()", () => {
 
 describe("start()", () => {
   let signaler;
-  let mock$initialize;
-  let mock$start;
+  let mock$fetchJSON;
   beforeEach(() => {
     signaler = new Signaler();
-    mock$initialize = jest
-      .spyOn(signaler, "initialize")
-      .mockResolvedValueOnce(initialize_200);
-    mock$start = jest.spyOn(signaler, "start").mockResolvedValueOnce(start_200);
+    mock$fetchJSON = jest
+      .spyOn(signaler, "fetchJSON")
+      .mockResolvedValueOnce(initialize_200)
+      .mockResolvedValueOnce(start_200);
 
     createTransport.mockReturnValueOnce({
       on: jest.fn(),
@@ -37,8 +36,7 @@ describe("start()", () => {
     });
   });
   afterEach(() => {
-    mock$initialize.mockRestore();
-    mock$start.mockRestore();
+    mock$fetchJSON.mockRestore();
     createTransport.mockRestore();
     createProducer.mockRestore();
   });
