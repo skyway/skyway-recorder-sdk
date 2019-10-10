@@ -8,13 +8,6 @@ class Signaler {
     this._pingPongTimer = null;
   }
 
-  get attrsForTest() {
-    return {
-      url: this._url,
-      headers: { ...this._headers }
-    };
-  }
-
   setUrl(url) {
     this._url = url;
     return this;
@@ -25,59 +18,23 @@ class Signaler {
     return this;
   }
 
-  async initialize(params) {
+  async fetchJSON(method, path, params) {
     const res = await fetchJSON(
-      "POST",
-      `${this._url}/initialize`,
+      method,
+      this._url + path,
       this._headers,
       params
     );
     return res.data;
   }
 
-  async connect(params) {
-    const res = await fetchJSON(
-      "POST",
-      `${this._url}/transport/connect`,
-      this._headers,
-      params
-    );
-    return res.data;
-  }
-
-  async produce(params) {
-    const res = await fetchJSON(
-      "POST",
-      `${this._url}/transport/produce`,
-      this._headers,
-      params
-    );
-    return res.data;
-  }
-
-  async start(params, intervalMs) {
-    const res = await fetchJSON(
-      "POST",
-      `${this._url}/record/start`,
-      this._headers,
-      params
-    );
-    this._pingPongTimer = setInterval(
-      () => fetchJSON("GET", `${this._url}/record/ping`, this._headers),
+  startPing(method, path, intervalMs) {
+    const pingPongTimer = setInterval(
+      () => fetchJSON(method, this._url + path, this._headers),
       intervalMs
     );
-    return res.data;
-  }
 
-  async stop() {
-    clearInterval(this._pingPongTimer);
-    const res = await fetchJSON(
-      "POST",
-      `${this._url}/record/stop`,
-      this._headers,
-      {}
-    );
-    return res.data;
+    return () => clearInterval(pingPongTimer);
   }
 }
 

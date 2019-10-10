@@ -16,6 +16,7 @@ class Client extends EventEmitter {
 
     this._state = "new";
     this._transport = null;
+    this._stopPingTimer = () => {};
   }
 
   async start(track) {
@@ -40,9 +41,17 @@ class Client extends EventEmitter {
     });
     this._handleProducerEvent();
 
-    const { id } = await this._signaler.start(
+    const { id } = await this._signaler.fetchJSON(
+      "POST",
+      "/record/start",
       { producerId: this._producer.id },
       1000 * 10 // 10 sec
+    );
+
+    this._stopPingTimer = this._signaler.startPing(
+      "GET",
+      "/record/ping",
+      1000 * 10
     );
 
     this._state = "recording";
@@ -58,7 +67,8 @@ class Client extends EventEmitter {
     this._producer.close();
     this._transport.close();
 
-    await this._signaler.stop();
+    this._stopPingTimer();
+    await this._signaler.fetchJSON("POST", "/record/stop", {});
   }
 
   async _initializeSession() {
@@ -67,7 +77,11 @@ class Client extends EventEmitter {
       sessionToken,
       routerRtpCapabilities,
       transportInfo
-    } = await this._signaler.initialize(this._authParams || {});
+    } = await this._signaler.fetchJSON(
+      "POST",
+      "/initialize",
+      this._authParams || {}
+    );
 
     // update
     this._signaler.setUrl(fqdn).addHeader("X-Session-Token", sessionToken);
@@ -87,7 +101,9 @@ class Client extends EventEmitter {
       "connect",
       async ({ dtlsParameters }, callback, errback) => {
         try {
-          await this._signaler.connect({ dtlsParameters });
+          await this._signaler.fetchJSON("POST", "/transport/connect", {
+            dtlsParameters
+          });
           callback();
         } catch (err) {
           errback(err);
@@ -101,7 +117,11 @@ class Client extends EventEmitter {
       async ({ kind, rtpParameters }, callback, errback) => {
         try {
           // server side producerId
-          const { id } = await this._signaler.produce({ kind, rtpParameters });
+          const { id } = await this._signaler.fetchJSON(
+            "POST",
+            "/transport/produce",
+            { kind, rtpParameters }
+          );
           callback({ id });
         } catch (err) {
           errback(err);
