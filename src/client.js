@@ -5,8 +5,6 @@ const {
   createProducer
 } = require("./util/factory");
 
-const pingPongInterval = 1000 * 10; // 15sec
-
 class Client extends EventEmitter {
   constructor(signaler, { auth, iceServers, iceTransportPolicy }) {
     super();
@@ -50,7 +48,7 @@ class Client extends EventEmitter {
 
     const { id } = await this._signaler.start(
       { producerId: this._producer.id },
-      pingPongInterval
+      1000 * 10 // 10 sec
     );
 
     this._state = "recording";
