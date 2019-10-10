@@ -1,41 +1,22 @@
 const EventEmitter = require("eventemitter3");
-const { Device } = require("mediasoup-client");
-const { pingPongInterval } = require("./util/constants");
+const {
+  createDevice,
+  createTransport,
+  createProducer
+} = require("./util/factory");
 
-const initializeSession = async ({ signaler, auth }) => {
-  const {
-    fqdn,
-    sessionToken,
-    routerRtpCapabilities,
-    transportInfo
-  } = await signaler.initialize({ auth });
-
-  // update
-  signaler.setUrl(fqdn);
-  signaler.addHeader("X-Session-Token", sessionToken);
-
-  return { routerRtpCapabilities, transportInfo };
-};
-
-const loadMediaSoupDevice = async ({ routerRtpCapabilities }) => {
-  const device = new Device();
-  await device.load({ routerRtpCapabilities });
-
-  if (!device.canProduce("audio")) throw new Error("TODO");
-
-  return device;
-};
+const pingPongInterval = 1000 * 10; // 15sec
 
 class Client extends EventEmitter {
-  constructor({ signaler, auth, iceServers, iceTransportPolicy }) {
+  constructor(signaler, { auth, iceServers, iceTransportPolicy }) {
     super();
 
     this._signaler = signaler;
     this._authParams = auth;
-    this._iceConfiguration = { iceServers, iceTransportPolicy };
+    this._iceServers = iceServers;
+    this._iceTransportPolicy = iceTransportPolicy;
 
     this._state = "new";
-    this._device = null;
     this._transport = null;
   }
 
@@ -44,23 +25,37 @@ class Client extends EventEmitter {
     if (track.kind !== "audio") throw new Error("TODO");
     if (this._state !== "new") throw new Error("TODO: can not reuse");
 
-    const { routerRtpCapabilities, transportInfo } = await initializeSession({
-      signaler: this._signaler,
-      auth: this._authParams
+    const {
+      routerRtpCapabilities,
+      transportInfo
+    } = await this._initializeSession();
+
+    const device = await createDevice({ routerRtpCapabilities });
+
+    if (!device.canProduce("audio")) throw new Error("TODO");
+
+    this._transport = createTransport({
+      device,
+      transportInfo,
+      iceServers: this._iceServers,
+      iceTransportPolicy: this._iceTransportPolicy
     });
+    this._handleTransportEvent();
 
-    this._state = "recording";
+    this._producer = await createProducer({
+      transport: this._transport,
+      track
+    });
+    this._handleProducerEvent();
 
-    this._device = await loadMediaSoupDevice({ routerRtpCapabilities });
-    await this._setupTransport(transportInfo);
-    await this._setupProducer(track);
-
-    const res = await this._signaler.start(
+    const { id } = await this._signaler.start(
       { producerId: this._producer.id },
       pingPongInterval
     );
 
-    return res;
+    this._state = "recording";
+
+    return id;
   }
 
   async stop() {
@@ -74,9 +69,22 @@ class Client extends EventEmitter {
     await this._signaler.stop();
   }
 
-  async _setupTransport(transportInfo) {
-    this._transport = this._device.createSendTransport(transportInfo);
+  async _initializeSession() {
+    const {
+      fqdn,
+      sessionToken,
+      routerRtpCapabilities,
+      transportInfo
+    } = await this._signaler.initialize(this._authParams || {});
 
+    // update
+    this._signaler.setUrl(fqdn);
+    this._signaler.addHeader("X-Session-Token", sessionToken);
+
+    return { routerRtpCapabilities, transportInfo };
+  }
+
+  async _handleTransportEvent() {
     this._transport.once(
       "connect",
       async ({ dtlsParameters }, callback, errback) => {
@@ -112,9 +120,7 @@ class Client extends EventEmitter {
     });
   }
 
-  async _setupProducer(track) {
-    this._producer = await this._transport.produce({ track });
-
+  async _handleProducerEvent() {
     this._producer.once("transportclose", () => {
       this.stop();
       this.emit("abort", { reason: "Transport closed." });

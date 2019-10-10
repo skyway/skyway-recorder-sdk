@@ -1,6 +1,8 @@
 const Client = require("./client");
 const Signaler = require("./signaler");
-const { recordingServerHost } = require("./util/constants");
+
+// TODO: fix
+const recordingServerHost = "http://localhost:8080";
 
 // copied from signaling server code
 const apiKeyRegExp = /^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/;
@@ -33,5 +35,5 @@ exports.createRecorder = async (apiKey, options = {}) => {
   }
 
   const signaler = new Signaler({ baseUrl: recordingServerHost, apiKey });
-  return new Client({ signaler, auth, iceServers, iceTransportPolicy });
+  return new Client(signaler, { auth, iceServers, iceTransportPolicy });
 };
