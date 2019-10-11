@@ -44,11 +44,9 @@ exports.createTransportAndBindEvents = ({
 }) => {
   const transport = device.createSendTransport(transportInfo);
 
-  transport.once("connect", async ({ dtlsParameters }, callback, errback) => {
+  transport.once("connect", async (params, callback, errback) => {
     try {
-      await signaler.fetchJSON("POST", "/transport/connect", {
-        dtlsParameters
-      });
+      await signaler.fetchJSON("POST", "/transport/connect", params);
       callback();
     } catch (err) {
       errback(err);
@@ -56,22 +54,20 @@ exports.createTransportAndBindEvents = ({
     }
   });
 
-  transport.once(
-    "produce",
-    async ({ kind, rtpParameters }, callback, errback) => {
-      try {
-        // server side producerId
-        const { id } = await signaler.fetchJSON("POST", "/transport/produce", {
-          kind,
-          rtpParameters
-        });
-        callback({ id });
-      } catch (err) {
-        errback(err);
-        // TODO: throw
-      }
+  transport.once("produce", async (params, callback, errback) => {
+    try {
+      // server side producerId
+      const { id } = await signaler.fetchJSON(
+        "POST",
+        "/transport/produce",
+        params
+      );
+      callback({ id });
+    } catch (err) {
+      errback(err);
+      // TODO: throw
     }
-  );
+  });
 
   transport.on("connectionstatechange", async state => {
     if (state === "disconnected") {
