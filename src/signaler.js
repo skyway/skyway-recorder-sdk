@@ -19,12 +19,18 @@ class Signaler {
   }
 
   async fetchJSON(method, path, params) {
+    // TODO: may rejects with failed to fetch by no-network
     const res = await fetchJSON(
       method,
       this._url + path,
       this._headers,
       params
     );
+
+    if (res.status !== 200) {
+      // TODO: should throw? or be handled by caller?
+    }
+
     return res.data;
   }
 

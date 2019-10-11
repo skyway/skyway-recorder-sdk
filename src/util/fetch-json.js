@@ -1,5 +1,4 @@
 module.exports = async (method, url, headers, body) => {
-  // TODO: may rejects with failed to fetch by no-network
   const res = await fetch(url, {
     method,
     headers: {
