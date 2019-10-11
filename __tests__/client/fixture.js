@@ -112,7 +112,3 @@ exports.initialize_200 = {
     ]
   }
 };
-
-exports.start_200 = {
-  id: "5bea388b-3f95-4e1e-acb5-a34efdd0c480"
-};

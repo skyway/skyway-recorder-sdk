@@ -24,6 +24,10 @@ class Client extends EventEmitter {
     this._stopPingTimer = () => {};
   }
 
+  get state() {
+    return this._state;
+  }
+
   async start(track) {
     if (!track) throw new Error("Track is missing!");
     if (track.kind !== "audio")
@@ -58,7 +62,7 @@ class Client extends EventEmitter {
       }
     });
 
-    const { id, stopPingTimer } = startRecording({
+    const { id, stopPingTimer } = await startRecording({
       signaler: this._signaler,
       producerId: this._producer.id,
       pingInterval: 1000 * 10 // 10 sec
@@ -71,6 +75,7 @@ class Client extends EventEmitter {
   }
 
   async stop() {
+    if (this._state === "closed") throw new Error("Already closed!");
     if (this._state !== "recording") throw new Error("Not yet started");
 
     this._state = "closed";
