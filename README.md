@@ -9,7 +9,9 @@ import { createRecorder } from "skyway-js-recorder";
   const client = await createRecorder(apiKey);
 
   // if use authentication
-  // const client = await createRecorder(apiKey, { timestamp, credential });
+  // const client = await createRecorder(apiKey, { auth: { timestamp, credential } });
+  // if use custom ICE configuration
+  // const client = await createRecorder(apiKey, { iceServers: [], iceTransportPolicy: "relay" });
 
   const track = await navigator.mediaDevices
     .getUserMedia({ audio: true })
