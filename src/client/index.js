@@ -71,7 +71,7 @@ class Client extends EventEmitter {
     this._stopPingTimer = stopPingTimer;
     this._state = "recording";
 
-    return id;
+    return { id };
   }
 
   async stop() {

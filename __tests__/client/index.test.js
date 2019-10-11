@@ -71,10 +71,10 @@ describe("start()", () => {
 
   test.todo("TODO: should throw if some of usecases throw");
 
-  test("should return id", async () => {
+  test("should return object w/ id", async () => {
     const client = new Client({}, {});
     const res = await client.start({ kind: "audio" });
-    expect(res).toBe("r1");
+    expect(res).toEqual({ id: "r1" });
   });
 });
 
