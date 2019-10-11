@@ -1,4 +1,4 @@
-const fetchJSON = require("../../src/util/fetch-json");
+const fetchJSON = require("../../src/signaler/fetch-json");
 // easier than using jest.mock()
 const fetchMock = require("fetch-mock");
 

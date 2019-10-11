@@ -1,8 +1,8 @@
 const lolex = require("lolex");
-const Signaler = require("../src/signaler");
+const Signaler = require("../../src/signaler");
 
-jest.mock("../src/util/fetch-json");
-const mock$fetchJSON = require("../src/util/fetch-json");
+jest.mock("../../src/signaler/fetch-json");
+const mock$fetchJSON = require("../../src/signaler/fetch-json");
 
 beforeEach(() => {
   mock$fetchJSON.mockResolvedValue({ status: 200, data: { ok: 1 } });
