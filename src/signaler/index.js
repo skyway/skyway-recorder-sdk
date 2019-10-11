@@ -1,4 +1,4 @@
-const fetchJSON = require("./util/fetch-json");
+const fetchJSON = require("./fetch-json");
 
 class Signaler {
   constructor() {

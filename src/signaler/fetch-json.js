@@ -1,4 +1,4 @@
-module.exports = async (method, url, headers, body) => {
+exports.fetchJSON = async (method, url, headers, body) => {
   const res = await fetch(url, {
     method,
     headers: {
