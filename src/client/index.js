@@ -2,10 +2,8 @@ const EventEmitter = require("eventemitter3");
 const {
   initializeSession,
   createDevice,
-  createTransport,
-  handleTransportEvent,
-  createProducer,
-  handleProducerEvent,
+  createTransportAndBindEvents,
+  createProducerAndBindEvents,
   startRecording,
   closeTransport,
   stopRecording
@@ -41,9 +39,9 @@ class Client extends EventEmitter {
 
     const device = await createDevice({ routerRtpCapabilities });
 
-    this._transport = createTransport({ device, transportInfo });
-    handleTransportEvent({
-      transport: this._transport,
+    this._transport = createTransportAndBindEvents({
+      device,
+      transportInfo,
       signaler: this._signaler,
       onAbort: reason => {
         this.stop();
@@ -51,12 +49,9 @@ class Client extends EventEmitter {
       }
     });
 
-    this._producer = await createProducer({
+    this._producer = await createProducerAndBindEvents({
       transport: this._transport,
-      track
-    });
-    handleProducerEvent({
-      producer: this._producer,
+      track,
       onAbort: reason => {
         this.stop();
         this.emit("abort", { reason });

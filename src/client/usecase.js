@@ -36,12 +36,14 @@ exports.createDevice = async ({ routerRtpCapabilities }) => {
   return device;
 };
 
-exports.createTransport = ({ device, transportInfo }) => {
+exports.createTransportAndBindEvents = ({
+  device,
+  transportInfo,
+  signaler,
+  onAbort
+}) => {
   const transport = device.createSendTransport(transportInfo);
-  return transport;
-};
 
-exports.handleTransportEvent = ({ transport, signaler, onAbort }) => {
   transport.once("connect", async ({ dtlsParameters }, callback, errback) => {
     try {
       await signaler.fetchJSON("POST", "/transport/connect", {
@@ -76,20 +78,26 @@ exports.handleTransportEvent = ({ transport, signaler, onAbort }) => {
       onAbort("Disconnected from server.");
     }
   });
+
+  return transport;
 };
 
-exports.createProducer = async ({ transport, track }) => {
+exports.createProducerAndBindEvents = async ({ transport, track, onAbort }) => {
   const producer = await transport.produce({ track });
-  return producer;
-};
 
-exports.handleProducerEvent = ({ producer, onAbort }) => {
   producer.once("transportclose", () => {
     onAbort("Transport closed.");
   });
   producer.once("trackended", () => {
     onAbort("Recording track ended.");
   });
+
+  return producer;
+};
+
+exports.closeTransport = ({ producer, transport }) => {
+  producer.close();
+  transport.close();
 };
 
 exports.startRecording = async ({ signaler, producerId, pingInterval }) => {
@@ -100,11 +108,6 @@ exports.startRecording = async ({ signaler, producerId, pingInterval }) => {
   const stopPingTimer = signaler.startPing("GET", "/record/ping", pingInterval);
 
   return { id, stopPingTimer };
-};
-
-exports.closeTransport = ({ producer, transport }) => {
-  producer.close();
-  transport.close();
 };
 
 exports.stopRecording = async ({ signaler, stopPingTimer }) => {
