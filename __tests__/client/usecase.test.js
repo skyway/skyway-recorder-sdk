@@ -11,24 +11,24 @@ const { initialize_200 } = require("./fixture");
 
 describe("initializeSession()", () => {
   let signaler;
-  let mock$fetchJSON;
+  let mock$request;
   let mock$setUrl;
   let mock$addHeader;
   beforeEach(() => {
     signaler = new Signaler();
-    mock$fetchJSON = jest
-      .spyOn(signaler, "fetchJSON")
+    mock$request = jest
+      .spyOn(signaler, "request")
       .mockResolvedValue(initialize_200);
     mock$setUrl = jest.spyOn(signaler, "setUrl");
     mock$addHeader = jest.spyOn(signaler, "addHeader");
   });
   afterEach(() => {
-    mock$fetchJSON.mockRestore();
+    mock$request.mockRestore();
     mock$setUrl.mockRestore();
     mock$addHeader.mockRestore();
   });
 
-  test("should call signaler.fetchJSON()", async () => {
+  test("should call signaler.request()", async () => {
     await initializeSession({
       signaler,
       authParams: { p: 1 },
@@ -36,14 +36,14 @@ describe("initializeSession()", () => {
       iceTransportPolicy: "all"
     });
 
-    expect(mock$fetchJSON).toHaveBeenCalledTimes(1);
-    expect(mock$fetchJSON).toHaveBeenCalledWith("POST", "/initialize", {
+    expect(mock$request).toHaveBeenCalledTimes(1);
+    expect(mock$request).toHaveBeenCalledWith("POST", "/initialize", {
       p: 1
     });
   });
 
   test("should update signaler", async () => {
-    mock$fetchJSON.mockResolvedValueOnce(initialize_200);
+    mock$request.mockResolvedValueOnce(initialize_200);
 
     await initializeSession({
       signaler,
@@ -60,7 +60,7 @@ describe("initializeSession()", () => {
   });
 
   test("should apply iceServers", async () => {
-    mock$fetchJSON.mockResolvedValue(initialize_200);
+    mock$request.mockResolvedValue(initialize_200);
 
     const res1 = await initializeSession({
       signaler,
@@ -80,7 +80,7 @@ describe("initializeSession()", () => {
   });
 
   test("should apply iceTransportPolicy", async () => {
-    mock$fetchJSON.mockResolvedValue(initialize_200);
+    mock$request.mockResolvedValue(initialize_200);
 
     const res1 = await initializeSession({
       signaler,
@@ -121,11 +121,9 @@ describe("createTransportAndBindEvents()", () => {
     expect(fake$device.createSendTransport).toHaveBeenCalledWith({ id: 1 });
   });
 
-  test("should call signaler.fetchJSON() at once(connect)", done => {
+  test("should call signaler.request() at once(connect)", done => {
     const signaler = new Signaler();
-    const mock$fetchJSON = jest
-      .spyOn(signaler, "fetchJSON")
-      .mockResolvedValue({});
+    const mock$request = jest.spyOn(signaler, "request").mockResolvedValue({});
 
     const transport = createTransportAndBindEvents({
       device: fake$device,
@@ -137,7 +135,7 @@ describe("createTransportAndBindEvents()", () => {
       "connect",
       { id: "xxx" },
       () => {
-        expect(mock$fetchJSON).toHaveBeenCalledWith(
+        expect(mock$request).toHaveBeenCalledWith(
           "POST",
           "/transport/connect",
           { id: "xxx" }
@@ -148,10 +146,10 @@ describe("createTransportAndBindEvents()", () => {
     );
   });
 
-  test("should call signaler.fetchJSON() at once(produce)", done => {
+  test("should call signaler.request() at once(produce)", done => {
     const signaler = new Signaler();
-    const mock$fetchJSON = jest
-      .spyOn(signaler, "fetchJSON")
+    const mock$request = jest
+      .spyOn(signaler, "request")
       .mockResolvedValue({ id: "xxx" });
 
     const transport = createTransportAndBindEvents({
@@ -165,7 +163,7 @@ describe("createTransportAndBindEvents()", () => {
       { kind: "audio" },
       res => {
         expect(res).toEqual({ id: "xxx" });
-        expect(mock$fetchJSON).toHaveBeenCalledWith(
+        expect(mock$request).toHaveBeenCalledWith(
           "POST",
           "/transport/produce",
           { kind: "audio" }
@@ -233,26 +231,26 @@ describe("createProducerAndBindEvents()", () => {
 
 describe("startRecording()", () => {
   let signaler;
-  let mock$fetchJSON;
+  let mock$request;
   let mock$startPing;
   beforeEach(() => {
     signaler = new Signaler();
-    mock$fetchJSON = jest
-      .spyOn(signaler, "fetchJSON")
+    mock$request = jest
+      .spyOn(signaler, "request")
       .mockResolvedValue({ id: "xxx" });
     mock$startPing = jest
       .spyOn(signaler, "startPing")
       .mockReturnValue(() => {});
   });
   afterEach(() => {
-    mock$fetchJSON.mockRestore();
+    mock$request.mockRestore();
     mock$startPing.mockRestore();
   });
 
-  test("should call signaler.fetchJSON() and return id", async () => {
+  test("should call signaler.request() and return id", async () => {
     const { id } = await startRecording({ signaler, producerId: "p1" });
     expect(id).toBe("xxx");
-    expect(mock$fetchJSON).toHaveBeenCalledWith("POST", "/record/start", {
+    expect(mock$request).toHaveBeenCalledWith("POST", "/record/start", {
       producerId: "p1"
     });
   });
@@ -266,25 +264,25 @@ describe("startRecording()", () => {
 
 describe("stopRecording()", () => {
   let signaler;
-  let mock$fetchJSON;
+  let mock$request;
   let mock$startPing;
   beforeEach(() => {
     signaler = new Signaler();
-    mock$fetchJSON = jest
-      .spyOn(signaler, "fetchJSON")
+    mock$request = jest
+      .spyOn(signaler, "request")
       .mockResolvedValue({ id: "xxx" });
     mock$startPing = jest
       .spyOn(signaler, "startPing")
       .mockReturnValue(() => {});
   });
   afterEach(() => {
-    mock$fetchJSON.mockRestore();
+    mock$request.mockRestore();
     mock$startPing.mockRestore();
   });
 
-  test("should call signaler.fetchJSON()", async () => {
+  test("should call signaler.request()", async () => {
     await stopRecording({ signaler, stopPingTimer: () => {} });
-    expect(mock$fetchJSON).toHaveBeenCalledWith("POST", "/record/stop", {});
+    expect(mock$request).toHaveBeenCalledWith("POST", "/record/stop", {});
   });
 
   test("should call stopPingTimer()", async () => {

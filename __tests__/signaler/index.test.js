@@ -22,7 +22,7 @@ describe("setUrl()", () => {
     const signaler = new Signaler();
 
     signaler.setUrl("http://localhost:1234");
-    await signaler.fetchJSON("GET", "/foo", {});
+    await signaler.request("GET", "/foo", {});
     expect(mock$fetchJSON).toHaveBeenCalledWith(
       "GET",
       "http://localhost:1234/foo",
@@ -31,7 +31,7 @@ describe("setUrl()", () => {
     );
 
     signaler.setUrl("http://localhost:4567");
-    await signaler.fetchJSON("GET", "/foo", {});
+    await signaler.request("GET", "/foo", {});
     expect(mock$fetchJSON).toHaveBeenCalledWith(
       "GET",
       "http://localhost:4567/foo",
@@ -52,7 +52,7 @@ describe("addHeader()", () => {
     const signaler = new Signaler();
 
     signaler.addHeader("foo", "bar");
-    await signaler.fetchJSON("POST", "/foo", {});
+    await signaler.request("POST", "/foo", {});
     expect(mock$fetchJSON).toHaveBeenCalledWith(
       "POST",
       "/foo",
@@ -61,7 +61,7 @@ describe("addHeader()", () => {
     );
 
     signaler.addHeader("foo2", "bar2").addHeader("foo3", "bar3");
-    await signaler.fetchJSON("POST", "/foo", {});
+    await signaler.request("POST", "/foo", {});
     expect(mock$fetchJSON).toHaveBeenCalledWith(
       "POST",
       "/foo",
@@ -71,20 +71,20 @@ describe("addHeader()", () => {
   });
 });
 
-describe("fetchJSON()", () => {
-  test("should call fetchJSON()", async () => {
+describe("request()", () => {
+  test("should call POST fetchJSON()", async () => {
     const signaler = new Signaler();
-    const res = await signaler.fetchJSON("POST", "/foo", { hi: 1 });
+    const res = await signaler.request("POST", "/foo", { hi: 1 });
 
     expect(mock$fetchJSON).toHaveBeenCalledWith("POST", "/foo", {}, { hi: 1 });
     expect(res).toEqual({ ok: 1 });
   });
 
-  test("should call fetchJSON()", async () => {
+  test("should call GET fetchJSON()", async () => {
     const signaler = new Signaler();
-    const res = await signaler.fetchJSON("GET", "/bar", { hi: 1 });
+    const res = await signaler.request("GET", "/bar", {});
 
-    expect(mock$fetchJSON).toHaveBeenCalledWith("GET", "/bar", {}, { hi: 1 });
+    expect(mock$fetchJSON).toHaveBeenCalledWith("GET", "/bar", {}, {});
     expect(res).toEqual({ ok: 1 });
   });
 });
