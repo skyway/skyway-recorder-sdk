@@ -11,7 +11,7 @@ exports.initializeSession = async ({
     sessionToken,
     routerRtpCapabilities,
     transportInfo
-  } = await signaler.fetchJSON("POST", "/initialize", authParams || {});
+  } = await signaler.request("POST", "/initialize", authParams || {});
 
   // update
   signaler.setUrl(fqdn).addHeader("X-Session-Token", sessionToken);
@@ -46,7 +46,7 @@ exports.createTransportAndBindEvents = ({
 
   transport.once("connect", async (params, callback, errback) => {
     try {
-      await signaler.fetchJSON("POST", "/transport/connect", params);
+      await signaler.request("POST", "/transport/connect", params);
       callback();
     } catch (err) {
       errback(err);
@@ -57,7 +57,7 @@ exports.createTransportAndBindEvents = ({
   transport.once("produce", async (params, callback, errback) => {
     try {
       // server side producerId
-      const { id } = await signaler.fetchJSON(
+      const { id } = await signaler.request(
         "POST",
         "/transport/produce",
         params
@@ -97,7 +97,7 @@ exports.closeTransport = ({ producer, transport }) => {
 };
 
 exports.startRecording = async ({ signaler, producerId, pingInterval }) => {
-  const { id } = await signaler.fetchJSON("POST", "/record/start", {
+  const { id } = await signaler.request("POST", "/record/start", {
     producerId
   });
 
@@ -108,5 +108,5 @@ exports.startRecording = async ({ signaler, producerId, pingInterval }) => {
 
 exports.stopRecording = async ({ signaler, stopPingTimer }) => {
   stopPingTimer();
-  await signaler.fetchJSON("POST", "/record/stop", {});
+  await signaler.request("POST", "/record/stop", {});
 };

@@ -18,7 +18,7 @@ class Signaler {
     return this;
   }
 
-  async fetchJSON(method, path, params) {
+  async request(method, path, params) {
     // TODO: may rejects with failed to fetch by no-network
     const res = await fetchJSON(
       method,
