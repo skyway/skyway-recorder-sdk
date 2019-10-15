@@ -10,14 +10,14 @@ const timestampRegExp = /^\d{13}$/;
 
 exports.createRecorder = (apiKey, options = {}) => {
   if (!apiKeyRegExp.test(apiKey))
-    throw new Error("API key is missing or invalid format!");
+    throw new Error("API KEY is missing or invalid format!");
 
   // default options
   const auth = options.auth || null;
   const iceServers = options.iceServers || null;
   const iceTransportPolicy = options.iceTransportPolicy || "all";
 
-  // validate options
+  // validate options if not default
   if (auth !== null) {
     if (!timestampRegExp.test(auth.timestamp))
       throw new Error("auth.timestamp must be a 13 digits unix tiemstamp!");
