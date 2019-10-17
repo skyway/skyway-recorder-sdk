@@ -5,8 +5,6 @@ class Signaler {
   constructor() {
     this._url = "";
     this._headers = {};
-
-    this._pingPongTimer = null;
   }
 
   setUrl(url) {
@@ -20,7 +18,6 @@ class Signaler {
   }
 
   async request(method, path, params) {
-    // TODO: may rejects with failed to fetch by no-network
     const { status, data } = await fetchJSON(
       method,
       this._url + path,
@@ -39,7 +36,11 @@ class Signaler {
 
   startPing(method, path, intervalMs) {
     const pingPongTimer = setInterval(
-      () => fetchJSON(method, this._url + path, this._headers).catch(() => {}),
+      () =>
+        fetchJSON(method, this._url + path, this._headers).catch(() => {
+          // do nothing when ping fails, no retry, no alerts
+          // TODO: really?
+        }),
       intervalMs
     );
 
