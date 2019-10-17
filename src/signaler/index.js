@@ -42,12 +42,10 @@ class Signaler {
 
   startPing(method, path, intervalMs) {
     const pingPongTimer = setInterval(() => {
-      debug("ping", method, path);
-      fetchJSON(method, this._url + path, this._headers).catch(() => {
+      debug("send ping", method, path);
+      fetchJSON(method, this._url + path, this._headers).catch(err => {
         // nothing to do when ping fails, no retry, no alerts
-        // TODO: really?
-        // when server restarts, sdk keeps sending ping and get 401 forever..
-        // it should stop ping and call onAbort()
+        debug("ping failed", err);
       });
     }, intervalMs);
 
