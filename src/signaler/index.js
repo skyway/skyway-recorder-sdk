@@ -1,4 +1,5 @@
 const fetchJSON = require("./fetch-json");
+const { NetworkError, ResponseError } = require("../errors");
 
 class Signaler {
   constructor() {
@@ -20,23 +21,25 @@ class Signaler {
 
   async request(method, path, params) {
     // TODO: may rejects with failed to fetch by no-network
-    const res = await fetchJSON(
+    const { status, data } = await fetchJSON(
       method,
       this._url + path,
       this._headers,
       params
-    );
+    ).catch(err => {
+      throw new NetworkError(err.message);
+    });
 
-    if (res.status !== 200) {
-      // TODO: should throw? or be handled by caller?
+    if (status !== 200) {
+      throw new ResponseError(data.error);
     }
 
-    return res.data;
+    return data;
   }
 
   startPing(method, path, intervalMs) {
     const pingPongTimer = setInterval(
-      () => fetchJSON(method, this._url + path, this._headers),
+      () => fetchJSON(method, this._url + path, this._headers).catch(() => {}),
       intervalMs
     );
 

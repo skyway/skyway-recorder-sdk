@@ -10,7 +10,7 @@ const timestampRegExp = /^\d{13}$/;
 
 exports.createRecorder = (apiKey, options = {}) => {
   if (!apiKeyRegExp.test(apiKey))
-    throw new Error("API KEY is missing or invalid format!");
+    throw new TypeError("API KEY is missing or invalid format!");
 
   // default options
   const auth = options.auth || null;
@@ -20,18 +20,18 @@ exports.createRecorder = (apiKey, options = {}) => {
   // validate options if not default
   if (auth !== null) {
     if (!timestampRegExp.test(auth.timestamp))
-      throw new Error("auth.timestamp must be a 13 digits unix tiemstamp!");
+      throw new TypeError("auth.timestamp must be a 13 digits unix tiemstamp!");
     if (!(auth.credential && typeof auth.credential === "string"))
-      throw new Error("auth.credential must be a hash string!");
+      throw new TypeError("auth.credential must be a hash string!");
   }
 
   if (iceServers !== null) {
     if (!Array.isArray(iceServers))
-      throw new Error("iceServers must be an array!");
+      throw new TypeError("iceServers must be an array!");
   }
   if (iceTransportPolicy !== "all") {
     if (iceTransportPolicy !== "relay")
-      throw new Error("iceTransportPolicy must be `relay` or `all`!");
+      throw new TypeError("iceTransportPolicy must be `relay` or `all`!");
   }
 
   const signaler = new Signaler()
@@ -40,3 +40,5 @@ exports.createRecorder = (apiKey, options = {}) => {
 
   return new Client(signaler, { auth, iceServers, iceTransportPolicy });
 };
+
+exports.errors = require("./errors");

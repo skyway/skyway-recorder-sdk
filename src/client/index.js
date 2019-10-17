@@ -8,6 +8,7 @@ const {
   closeTransport,
   stopRecording
 } = require("./usecase");
+const { InvalidStateError } = require("./../errors");
 
 class Client extends EventEmitter {
   constructor(signaler, { auth, iceServers, iceTransportPolicy }) {
@@ -29,10 +30,10 @@ class Client extends EventEmitter {
   }
 
   async start(track) {
-    if (!track) throw new Error("Track is missing!");
+    if (!track) throw new TypeError("Track is missing!");
     if (track.kind !== "audio")
-      throw new Error("Recording video track is not supported!");
-    if (this._state !== "new") throw new Error("Already started!");
+      throw new TypeError("Recording video track is not supported!");
+    if (this._state !== "new") throw new InvalidStateError("Already started!");
 
     const { routerRtpCapabilities, transportInfo } = await initializeSession({
       signaler: this._signaler,
@@ -75,8 +76,10 @@ class Client extends EventEmitter {
   }
 
   async stop() {
-    if (this._state === "closed") throw new Error("Already closed!");
-    if (this._state !== "recording") throw new Error("Not yet started");
+    if (this._state === "closed")
+      throw new InvalidStateError("Already closed!");
+    if (this._state !== "recording")
+      throw new InvalidStateError("Not yet started");
 
     this._state = "closed";
 
