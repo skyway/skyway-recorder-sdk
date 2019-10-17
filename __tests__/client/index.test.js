@@ -83,6 +83,7 @@ describe("stop()", () => {
     initializeSession.mockResolvedValue(initialize_200);
     createProducerAndBindEvents.mockResolvedValue({ id: "p1" });
     startRecording.mockResolvedValue({ id: "r1" });
+    stopRecording.mockResolvedValue();
   });
   afterEach(() => {
     initializeSession.mockRestore();

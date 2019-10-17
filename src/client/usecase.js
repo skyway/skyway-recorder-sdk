@@ -80,7 +80,7 @@ exports.createTransportAndBindEvents = ({
     }
   });
 
-  transport.on("connectionstconnectatechange", async state => {
+  transport.on("connectionstatechange", async state => {
     debug("transport@cSC", state);
 
     if (state === "disconnected") {
