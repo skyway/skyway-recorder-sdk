@@ -13,6 +13,7 @@
   "author": "NTT Communications Corp.",
   "license": "MIT",
   "dependencies": {
+    "custom-error-class": "^1.0.0",
     "eventemitter3": "^4.0.0",
     "mediasoup-client": "^3.2.5"
   },

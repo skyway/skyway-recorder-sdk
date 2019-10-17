@@ -28,7 +28,7 @@ class Signaler {
     });
 
     if (status !== 200) {
-      throw new ResponseError(data.error);
+      throw new ResponseError(`${data.error}: ${data.message}`);
     }
 
     return data;

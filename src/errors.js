@@ -1,3 +1,5 @@
-exports.InvalidStateError = class InvalidStateError extends Error {};
-exports.NetworkError = class NetworkError extends Error {};
-exports.ResponseError = class ResponseError extends Error {};
+const CustomError = require("custom-error-class");
+
+exports.InvalidStateError = class InvalidStateError extends CustomError {};
+exports.NetworkError = class NetworkError extends CustomError {};
+exports.ResponseError = class ResponseError extends CustomError {};
