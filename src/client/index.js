@@ -9,7 +9,7 @@ const {
   closeTransport,
   stopRecording
 } = require("./usecase");
-const { InvalidStateError } = require("./../errors");
+const { InvalidStateError, AbortError } = require("./../errors");
 
 class Client extends EventEmitter {
   constructor(signaler, { auth, iceServers, iceTransportPolicy }) {
@@ -55,7 +55,7 @@ class Client extends EventEmitter {
       onAbort: reason => {
         debug("aborted by", reason);
         this.stop();
-        this.emit("abort", { reason });
+        this.emit("abort", new AbortError(reason));
       }
     });
     debug("transport created");
@@ -66,7 +66,7 @@ class Client extends EventEmitter {
       onAbort: reason => {
         debug("aborted by", reason);
         this.stop();
-        this.emit("abort", { reason });
+        this.emit("abort", new AbortError(reason));
       }
     });
     debug("producer created");
@@ -97,6 +97,10 @@ class Client extends EventEmitter {
     await stopRecording({
       signaler: this._signaler,
       stopPingTimer: this._stopPingTimer
+    }).catch(err => {
+      // if network problem causes abort, here also throws but nothing to do
+      // even in normal case, ping-pong timeout will work to stop recording
+      debug(err);
     });
     debug("record stopped");
   }

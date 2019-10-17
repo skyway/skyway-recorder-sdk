@@ -1,6 +1,7 @@
 const CustomError = require("custom-error-class");
 
 // client errors
+exports.AbortError = class AbortError extends CustomError {};
 exports.InvalidStateError = class InvalidStateError extends CustomError {};
 exports.NotSupportedError = class NotSupportedError extends CustomError {};
 
