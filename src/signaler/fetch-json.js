@@ -1,3 +1,5 @@
+const { NetworkError, ServerError } = require("../errors");
+
 module.exports = async (method, url, headers, params) => {
   const options = {
     method,
@@ -15,8 +17,13 @@ module.exports = async (method, url, headers, params) => {
     if (method === "POST") options.body = JSON.stringify(params);
   }
 
-  const res = await fetch(url, options);
-  const data = await res.json();
+  const res = await fetch(url, options).catch(err => {
+    throw new NetworkError(err.message);
+  });
+
+  const data = await res.json().catch(err => {
+    throw new ServerError(err.message);
+  });
 
   const status = res.status;
   return { status, data };

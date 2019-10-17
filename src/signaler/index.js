@@ -1,5 +1,5 @@
 const fetchJSON = require("./fetch-json");
-const { NetworkError, ResponseError } = require("../errors");
+const { ServerError, RequestError } = require("../errors");
 
 class Signaler {
   constructor() {
@@ -18,17 +18,19 @@ class Signaler {
   }
 
   async request(method, path, params) {
+    // may throw NetworkError or ServerError
     const { status, data } = await fetchJSON(
       method,
       this._url + path,
       this._headers,
       params
-    ).catch(err => {
-      throw new NetworkError(err.message);
-    });
+    );
 
+    if (status === 500) {
+      throw new ServerError(`${data.error}: ${data.message}`);
+    }
     if (status !== 200) {
-      throw new ResponseError(`${data.error}: ${data.message}`);
+      throw new RequestError(`${data.error}: ${data.message}`);
     }
 
     return data;
