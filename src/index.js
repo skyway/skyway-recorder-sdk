@@ -1,3 +1,4 @@
+const debug = require("debug")("skyway-recorder");
 const Client = require("./client");
 const Signaler = require("./signaler");
 
@@ -9,6 +10,9 @@ const apiKeyRegExp = /^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/;
 const timestampRegExp = /^\d{13}$/;
 
 exports.createRecorder = (apiKey, options = {}) => {
+  debug("createRecorder() w/ options");
+  debug(apiKey, options);
+
   if (!apiKeyRegExp.test(apiKey))
     throw new TypeError("API KEY is missing or invalid format!");
 
@@ -37,8 +41,12 @@ exports.createRecorder = (apiKey, options = {}) => {
   const signaler = new Signaler()
     .setUrl(recordingServerHost)
     .addHeader("X-Api-Key", apiKey);
+  debug("signaler created");
 
-  return new Client(signaler, { auth, iceServers, iceTransportPolicy });
+  const client = new Client(signaler, { auth, iceServers, iceTransportPolicy });
+  debug("client created w/ options");
+  debug({ auth, iceServers, iceTransportPolicy });
+  return client;
 };
 
 exports.errors = require("./errors");

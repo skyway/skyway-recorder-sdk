@@ -1,3 +1,4 @@
+const debug = require("debug")("skyway-recorder:client");
 const EventEmitter = require("eventemitter3");
 const {
   initializeSession,
@@ -30,6 +31,7 @@ class Client extends EventEmitter {
   }
 
   async start(track) {
+    debug("start()", track);
     if (!track) throw new TypeError("Track is missing!");
     if (track.kind !== "audio")
       throw new TypeError("Recording video track is not supported!");
@@ -41,33 +43,40 @@ class Client extends EventEmitter {
       iceServers: this._iceServers,
       iceTransportPolicy: this._iceTransportPolicy
     });
+    debug("session initialized");
 
     const device = await createDevice({ routerRtpCapabilities });
+    debug("device created");
 
     this._transport = createTransportAndBindEvents({
       device,
       transportInfo,
       signaler: this._signaler,
       onAbort: reason => {
+        debug("aborted by", reason);
         this.stop();
         this.emit("abort", { reason });
       }
     });
+    debug("transport created");
 
     this._producer = await createProducerAndBindEvents({
       transport: this._transport,
       track,
       onAbort: reason => {
+        debug("aborted by", reason);
         this.stop();
         this.emit("abort", { reason });
       }
     });
+    debug("producer created");
 
     const { id, stopPingTimer } = await startRecording({
       signaler: this._signaler,
       producerId: this._producer.id,
       pingInterval: 1000 * 10 // 10 sec
     });
+    debug("record started w/ id", id);
 
     this._stopPingTimer = stopPingTimer;
     this._state = "recording";
@@ -76,6 +85,7 @@ class Client extends EventEmitter {
   }
 
   async stop() {
+    debug("stop()");
     if (this._state === "closed")
       throw new InvalidStateError("Already closed!");
     if (this._state !== "recording")
@@ -88,6 +98,7 @@ class Client extends EventEmitter {
       signaler: this._signaler,
       stopPingTimer: this._stopPingTimer
     });
+    debug("record stopped");
   }
 }
 
