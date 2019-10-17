@@ -57,7 +57,6 @@ exports.createTransportAndBindEvents = ({
       callback();
     } catch (err) {
       errback(err);
-      // TODO: throw
     }
   });
 
@@ -72,7 +71,6 @@ exports.createTransportAndBindEvents = ({
       callback({ id });
     } catch (err) {
       errback(err);
-      // TODO: throw
     }
   });
 

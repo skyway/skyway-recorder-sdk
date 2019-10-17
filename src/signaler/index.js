@@ -40,7 +40,7 @@ class Signaler {
     const pingPongTimer = setInterval(
       () =>
         fetchJSON(method, this._url + path, this._headers).catch(() => {
-          // do nothing when ping fails, no retry, no alerts
+          // nothing to do when ping fails, no retry, no alerts
           // TODO: really?
         }),
       intervalMs
