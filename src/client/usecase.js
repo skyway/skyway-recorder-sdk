@@ -1,4 +1,5 @@
 const { Device } = require("mediasoup-client");
+const { NotSupportedError } = require("../errors");
 
 exports.initializeSession = async ({
   signaler,
@@ -28,10 +29,16 @@ exports.initializeSession = async ({
 
 exports.createDevice = async ({ routerRtpCapabilities }) => {
   const device = new Device();
-  await device.load({ routerRtpCapabilities });
 
-  if (!device.canProduce("audio"))
-    throw new Error("Your device does not support to send audio!");
+  const isLoaded = await device
+    .load({ routerRtpCapabilities })
+    .then(() => true)
+    .catch(() => false);
+
+  if (!(isLoaded && device.canProduce("audio")))
+    throw new NotSupportedError(
+      "Your device does not have capabilities to send audio!"
+    );
 
   return device;
 };
