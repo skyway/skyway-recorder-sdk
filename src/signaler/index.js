@@ -13,7 +13,7 @@ class Signaler {
     return this;
   }
 
-  addHeader(key, value) {
+  setHeader(key, value) {
     this._headers[key] = value;
     return this;
   }

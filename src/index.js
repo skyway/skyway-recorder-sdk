@@ -36,7 +36,7 @@ exports.createRecorder = (apiKey, options = {}) => {
 
   const signaler = new Signaler()
     .setUrl(recordingServerHost)
-    .addHeader("X-Api-Key", apiKey);
+    .setHeader("X-Api-Key", apiKey);
 
   return new Client(signaler, { auth, iceServers, iceTransportPolicy });
 };

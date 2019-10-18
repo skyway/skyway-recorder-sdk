@@ -41,17 +41,17 @@ describe("setUrl()", () => {
   });
 });
 
-describe("addHeader()", () => {
+describe("setHeader()", () => {
   test("should return this", () => {
     const signaler = new Signaler();
 
-    expect(signaler.addHeader("key", "value")).toBe(signaler);
+    expect(signaler.setHeader("key", "value")).toBe(signaler);
   });
 
   test("should add header", async () => {
     const signaler = new Signaler();
 
-    signaler.addHeader("foo", "bar");
+    signaler.setHeader("foo", "bar");
     await signaler.request("POST", "/foo", {});
     expect(mock$fetchJSON).toHaveBeenCalledWith(
       "POST",
@@ -60,7 +60,7 @@ describe("addHeader()", () => {
       {}
     );
 
-    signaler.addHeader("foo2", "bar2").addHeader("foo3", "bar3");
+    signaler.setHeader("foo2", "bar2").setHeader("foo3", "bar3");
     await signaler.request("POST", "/foo", {});
     expect(mock$fetchJSON).toHaveBeenCalledWith(
       "POST",

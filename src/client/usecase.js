@@ -14,7 +14,7 @@ exports.initializeSession = async ({
   } = await signaler.request("POST", "/initialize", authParams || {});
 
   // update
-  signaler.setUrl(fqdn).addHeader("X-Session-Token", sessionToken);
+  signaler.setUrl(fqdn).setHeader("X-Session-Token", sessionToken);
 
   // if passed, override even if it is empty
   if (iceServers) {
