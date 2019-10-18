@@ -57,7 +57,7 @@ describe("start()", () => {
       });
   });
 
-  test("should throw if call start() repeatdlly", async done => {
+  test("should throw if call start() repeatedly", async done => {
     const client = new Client({}, {});
     await client.start({ kind: "audio" });
     await client
