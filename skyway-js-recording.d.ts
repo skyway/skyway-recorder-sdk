@@ -2,7 +2,7 @@
 
 import EventEmitter from "eventemitter3";
 
-type RecorderState = "new" | "recording" | "closed";
+declare type RecorderState = "new" | "recording" | "closed";
 
 declare class Recorder extends EventEmitter {
   readonly state: RecorderState;
@@ -22,7 +22,7 @@ export interface RecorderOptions {
 
 export declare function createRecorder(options?: RecorderOptions): Recorder;
 
-// TODO: how to export ...?
+// TODO: how to define and export ...?
 export declare const errors = {
   AbortError: Error;
 };
