@@ -28,7 +28,7 @@ describe("initializeSession()", () => {
     mock$setHeader.mockRestore();
   });
 
-  test("should call signaler.request()", async () => {
+  test("should call signaler.request() w/ auth", async () => {
     await initializeSession({
       signaler,
       authParams: { p: 1 },
@@ -38,8 +38,22 @@ describe("initializeSession()", () => {
 
     expect(mock$request).toHaveBeenCalledTimes(1);
     expect(mock$request).toHaveBeenCalledWith("POST", "/initialize", {
-      p: 1
+      auth: {
+        p: 1
+      }
     });
+  });
+
+  test("should call signaler.request() w/o auth", async () => {
+    await initializeSession({
+      signaler,
+      authParams: null,
+      iceSercers: null,
+      iceTransportPolicy: "all"
+    });
+
+    expect(mock$request).toHaveBeenCalledTimes(1);
+    expect(mock$request).toHaveBeenCalledWith("POST", "/initialize", {});
   });
 
   test("should update signaler", async () => {
