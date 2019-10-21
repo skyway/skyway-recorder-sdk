@@ -8,12 +8,17 @@ exports.initializeSession = async ({
   iceServers,
   iceTransportPolicy
 }) => {
+  const postBody = {};
+  if (authParams) {
+    postBody.auth = authParams;
+  }
+
   const {
     fqdn,
     sessionToken,
     routerRtpCapabilities,
     transportInfo
-  } = await signaler.request("POST", "/initialize", authParams || {});
+  } = await signaler.request("POST", "/initialize", postBody);
 
   // update
   signaler.setUrl(fqdn).setHeader("X-Session-Token", sessionToken);
