@@ -1,8 +1,6 @@
-// TODO: check actually
-
 import EventEmitter from "eventemitter3";
 
-declare type RecorderState = "new" | "recording" | "closed";
+type RecorderState = "new" | "recording" | "closed";
 
 declare class Recorder extends EventEmitter {
   readonly state: RecorderState;
@@ -11,18 +9,33 @@ declare class Recorder extends EventEmitter {
   stop(): Promise<void>;
 }
 
-export interface RecorderOptions {
+interface RecorderOptions {
   auth?: {
     timestamp: number;
     credential: string;
   };
-  iceServers?: RTCIceServers[];
+  iceServers?: RTCIceServer[];
   iceTransportPolicy?: RTCIceTransportPolicy;
 }
 
+declare class AbortError extends Error {}
+declare class InvalidStateError extends Error {}
+declare class NotSupportedError extends Error {}
+declare class NetworkError extends Error {}
+declare class RequestError extends Error {}
+declare class ServerError extends Error {}
+
+/*
+ * Exports
+ *
+ */
 export declare function createRecorder(options?: RecorderOptions): Recorder;
 
-// TODO: how to define and export ...?
 export declare const errors = {
-  AbortError: Error;
+  AbortError: AbortError;
+  InvalidStateError: InvalidStateError;
+  NotSupportedError: NotSupportedError;
+  NetworkError: NetworkError;
+  RequestError: RequestError;
+  ServerError: ServerError;
 };
