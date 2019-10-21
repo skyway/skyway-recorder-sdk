@@ -31,13 +31,10 @@ exports.initializeSession = async ({
 exports.createDevice = async ({ routerRtpCapabilities }) => {
   const device = new Device();
 
-  const isLoaded = await device
-    .load({ routerRtpCapabilities })
-    .then(() => true)
-    .catch(() => false);
+  await device.load({ routerRtpCapabilities });
   debug("device loaded");
 
-  if (!(isLoaded && device.canProduce("audio")))
+  if (!device.canProduce("audio"))
     throw new NotSupportedError(
       "Your device does not have capabilities to send audio!"
     );
