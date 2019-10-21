@@ -1,3 +1,4 @@
+const EventEmitter = require("eventemitter3");
 const Client = require("../../src/client");
 const {
   initializeSession,
@@ -13,10 +14,9 @@ const { initialize_200 } = require("./fixture");
 jest.mock("../../src/client/usecase");
 
 describe("constructor()", () => {
-  test("should inherits EventEmitter", done => {
+  test("should inherits EventEmitter", () => {
     const client = new Client({}, {});
-    client.on("ev", done);
-    client.emit("ev");
+    expect(client).toBeInstanceOf(EventEmitter);
   });
 
   test("should get state", () => {
@@ -57,7 +57,7 @@ describe("start()", () => {
       });
   });
 
-  test("should throw if call start() repeatdlly", async done => {
+  test("should throw if call start() repeatedly", async done => {
     const client = new Client({}, {});
     await client.start({ kind: "audio" });
     await client

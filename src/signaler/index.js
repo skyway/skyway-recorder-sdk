@@ -14,8 +14,8 @@ class Signaler {
     return this;
   }
 
-  addHeader(key, value) {
-    debug(`addHeader(${key}, ${value})`);
+  setHeader(key, value) {
+    debug(`setHeader(${key}, ${value})`);
     this._headers[key] = value;
     return this;
   }

@@ -13,19 +13,19 @@ describe("initializeSession()", () => {
   let signaler;
   let mock$request;
   let mock$setUrl;
-  let mock$addHeader;
+  let mock$setHeader;
   beforeEach(() => {
     signaler = new Signaler();
     mock$request = jest
       .spyOn(signaler, "request")
       .mockResolvedValue(initialize_200);
     mock$setUrl = jest.spyOn(signaler, "setUrl");
-    mock$addHeader = jest.spyOn(signaler, "addHeader");
+    mock$setHeader = jest.spyOn(signaler, "setHeader");
   });
   afterEach(() => {
     mock$request.mockRestore();
     mock$setUrl.mockRestore();
-    mock$addHeader.mockRestore();
+    mock$setHeader.mockRestore();
   });
 
   test("should call signaler.request()", async () => {
@@ -53,7 +53,7 @@ describe("initializeSession()", () => {
     });
 
     expect(mock$setUrl).toHaveBeenCalledWith(initialize_200.fqdn);
-    expect(mock$addHeader).toHaveBeenCalledWith(
+    expect(mock$setHeader).toHaveBeenCalledWith(
       "X-Session-Token",
       initialize_200.sessionToken
     );
