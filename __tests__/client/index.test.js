@@ -69,12 +69,18 @@ describe("start()", () => {
       });
   });
 
-  test.todo("TODO: should throw if some of usecases throw");
-
   test("should return object w/ id", async () => {
     const client = new Client({}, {});
     const res = await client.start({ kind: "audio" });
     expect(res).toEqual({ id: "r1" });
+  });
+
+  test("should throw error from usecase", async () => {
+    const err = new Error();
+    initializeSession.mockRejectedValueOnce(err);
+
+    const client = new Client({}, {});
+    await expect(client.start({ kind: "audio" })).rejects.toThrowError(err);
   });
 });
 
@@ -133,5 +139,11 @@ describe("stop()", () => {
     expect(stopRecording).toHaveBeenCalled();
   });
 
-  test.todo("TODO: should throw if some of usecases throw");
+  test("should not throw when stopRecording() throws", async () => {
+    stopRecording.mockRejectedValueOnce(new Error());
+
+    const client = new Client({}, {});
+    await client.start({ kind: "audio" });
+    await expect(client.stop()).resolves.toBeUndefined();
+  });
 });
