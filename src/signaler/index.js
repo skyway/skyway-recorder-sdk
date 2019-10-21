@@ -1,44 +1,53 @@
+const debug = require("debug")("skyway-recorder:signaler");
 const fetchJSON = require("./fetch-json");
+const { ServerError, RequestError } = require("../errors");
 
 class Signaler {
   constructor() {
     this._url = "";
     this._headers = {};
-
-    this._pingPongTimer = null;
   }
 
   setUrl(url) {
+    debug(`setUrl ${this._url} -> ${url}`);
     this._url = url;
     return this;
   }
 
   setHeader(key, value) {
+    debug(`setHeader(${key}, ${value})`);
     this._headers[key] = value;
     return this;
   }
 
   async request(method, path, params) {
-    // TODO: may rejects with failed to fetch by no-network
-    const res = await fetchJSON(
+    debug("request()", method, path);
+    // may throw NetworkError or ServerError
+    const { status, data } = await fetchJSON(
       method,
       this._url + path,
       this._headers,
       params
     );
 
-    if (res.status !== 200) {
-      // TODO: should throw? or be handled by caller?
+    if (status === 500) {
+      throw new ServerError(`${data.error}: ${data.message}`);
+    }
+    if (status !== 200) {
+      throw new RequestError(`${data.error}: ${data.message}`);
     }
 
-    return res.data;
+    return data;
   }
 
   startPing(method, path, intervalMs) {
-    const pingPongTimer = setInterval(
-      () => fetchJSON(method, this._url + path, this._headers),
-      intervalMs
-    );
+    const pingPongTimer = setInterval(() => {
+      debug("send ping", method, path);
+      fetchJSON(method, this._url + path, this._headers).catch(err => {
+        // nothing to do when ping fails, no retry, no alerts
+        debug("ping failed", err);
+      });
+    }, intervalMs);
 
     return () => clearInterval(pingPongTimer);
   }

@@ -1,3 +1,4 @@
+const debug = require("debug")("skyway-recorder");
 const Client = require("./client");
 const Signaler = require("./signaler");
 
@@ -9,8 +10,11 @@ const apiKeyRegExp = /^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/;
 const timestampRegExp = /^\d{13}$/;
 
 exports.createRecorder = (apiKey, options = {}) => {
+  debug("createRecorder() w/ options");
+  debug(apiKey, options);
+
   if (!apiKeyRegExp.test(apiKey))
-    throw new Error("API KEY is missing or invalid format!");
+    throw new TypeError("API KEY is missing or invalid format!");
 
   // default options
   const auth = options.auth || null;
@@ -20,23 +24,29 @@ exports.createRecorder = (apiKey, options = {}) => {
   // validate options if not default
   if (auth !== null) {
     if (!timestampRegExp.test(auth.timestamp))
-      throw new Error("auth.timestamp must be a 13 digits unix tiemstamp!");
+      throw new TypeError("auth.timestamp must be a 13 digits unix tiemstamp!");
     if (!(auth.credential && typeof auth.credential === "string"))
-      throw new Error("auth.credential must be a hash string!");
+      throw new TypeError("auth.credential must be a hash string!");
   }
 
   if (iceServers !== null) {
     if (!Array.isArray(iceServers))
-      throw new Error("iceServers must be an array!");
+      throw new TypeError("iceServers must be an array!");
   }
   if (iceTransportPolicy !== "all") {
     if (iceTransportPolicy !== "relay")
-      throw new Error("iceTransportPolicy must be `relay` or `all`!");
+      throw new TypeError("iceTransportPolicy must be `relay` or `all`!");
   }
 
   const signaler = new Signaler()
     .setUrl(recordingServerHost)
     .setHeader("X-Api-Key", apiKey);
+  debug("signaler created");
 
-  return new Client(signaler, { auth, iceServers, iceTransportPolicy });
+  const client = new Client(signaler, { auth, iceServers, iceTransportPolicy });
+  debug("client created w/ options");
+  debug({ auth, iceServers, iceTransportPolicy });
+  return client;
 };
+
+exports.errors = require("./errors");

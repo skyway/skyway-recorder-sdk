@@ -1,4 +1,6 @@
+const debug = require("debug")("skyway-recorder:client:usecase");
 const { Device } = require("mediasoup-client");
+const { NotSupportedError } = require("../errors");
 
 exports.initializeSession = async ({
   signaler,
@@ -28,10 +30,14 @@ exports.initializeSession = async ({
 
 exports.createDevice = async ({ routerRtpCapabilities }) => {
   const device = new Device();
+
   await device.load({ routerRtpCapabilities });
+  debug("device loaded");
 
   if (!device.canProduce("audio"))
-    throw new Error("Your device does not support to send audio!");
+    throw new NotSupportedError(
+      "Your device does not have capabilities to send audio!"
+    );
 
   return device;
 };
@@ -45,16 +51,19 @@ exports.createTransportAndBindEvents = ({
   const transport = device.createSendTransport(transportInfo);
 
   transport.once("connect", async (params, callback, errback) => {
+    debug("transport@connect");
+
     try {
       await signaler.request("POST", "/transport/connect", params);
       callback();
     } catch (err) {
       errback(err);
-      // TODO: throw
     }
   });
 
   transport.once("produce", async (params, callback, errback) => {
+    debug("transport@produce");
+
     try {
       // server side producerId
       const { id } = await signaler.request(
@@ -65,11 +74,12 @@ exports.createTransportAndBindEvents = ({
       callback({ id });
     } catch (err) {
       errback(err);
-      // TODO: throw
     }
   });
 
   transport.on("connectionstatechange", async state => {
+    debug("transport@cSC", state);
+
     if (state === "disconnected") {
       onAbort("Disconnected from server.");
     }
@@ -82,9 +92,11 @@ exports.createProducerAndBindEvents = async ({ transport, track, onAbort }) => {
   const producer = await transport.produce({ track });
 
   producer.once("transportclose", () => {
+    debug("producer@transportclose");
     onAbort("Transport closed.");
   });
   producer.once("trackended", () => {
+    debug("producer@trackended");
     onAbort("Recording track ended.");
   });
 
