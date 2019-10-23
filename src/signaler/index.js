@@ -30,10 +30,10 @@ class Signaler {
       params
     );
 
-    if (status === 200) return data;
+    if (200 <= status && status < 300) return data;
 
     // otherwise throw error
-    if (status >= 500) throw new ServerError(data.error);
+    if (500 <= status) throw new ServerError(data.error);
     // mainly 40x
     throw new RequestError(`${data.error}: ${data.message}`);
   }
