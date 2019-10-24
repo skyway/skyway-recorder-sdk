@@ -30,14 +30,13 @@ class Signaler {
       params
     );
 
-    if (status === 500) {
-      throw new ServerError(`${data.error}: ${data.message}`);
-    }
-    if (status !== 200) {
+    // 200~299
+    if (200 <= status && status < 300) return data;
+    // 400~499
+    if (400 <= status && status < 500)
       throw new RequestError(`${data.error}: ${data.message}`);
-    }
-
-    return data;
+    // 100~199, 300~399, 500~
+    throw new ServerError(data.error);
   }
 
   startPing(method, path, intervalMs) {
