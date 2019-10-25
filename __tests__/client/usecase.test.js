@@ -66,7 +66,7 @@ describe("initializeSession()", () => {
       iceTransportPolicy: "all"
     });
 
-    expect(mock$setUrl).toHaveBeenCalledWith(initialize_200.fqdn);
+    expect(mock$setUrl).toHaveBeenCalledWith(initialize_200.serverUrl);
     expect(mock$setHeader).toHaveBeenCalledWith(
       "X-Session-Token",
       initialize_200.sessionToken

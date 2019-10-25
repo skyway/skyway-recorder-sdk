@@ -14,14 +14,14 @@ exports.initializeSession = async ({
   }
 
   const {
-    fqdn,
+    serverUrl,
     sessionToken,
     routerRtpCapabilities,
     transportInfo
   } = await signaler.request("POST", "/initialize", postBody);
 
   // update
-  signaler.setUrl(fqdn).setHeader("X-Session-Token", sessionToken);
+  signaler.setUrl(serverUrl).setHeader("X-Session-Token", sessionToken);
 
   // if passed, override even if it is empty
   if (iceServers) {
