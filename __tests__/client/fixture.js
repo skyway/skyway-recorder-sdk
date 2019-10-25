@@ -1,5 +1,5 @@
 exports.initialize_200 = {
-  fqdn: "http://localhost:8080",
+  serverUrl: "http://localhost:8080",
   routerRtpCapabilities: {
     codecs: [
       {
