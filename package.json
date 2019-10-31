@@ -16,18 +16,18 @@
     "custom-error-class": "^1.0.0",
     "debug": "^4.1.1",
     "eventemitter3": "^4.0.0",
-    "mediasoup-client": "^3.2.5"
+    "mediasoup-client": "^3.2.10"
   },
   "devDependencies": {
-    "eslint": "^6.5.1",
-    "eslint-config-prettier": "^6.4.0",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-prettier": "^3.1.1",
-    "fetch-mock": "^7.4.0",
+    "fetch-mock": "^7.7.0",
     "jest": "^24.9.0",
-    "lolex": "^4.2.0",
+    "lolex": "^5.1.1",
     "node-fetch": "^2.6.0",
     "prettier": "^1.18.2",
-    "webpack": "^4.41.0",
+    "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
   }
 }
