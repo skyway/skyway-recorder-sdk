@@ -86,7 +86,7 @@ exports.createTransportAndBindEvents = ({
     debug("transport@cSC", state);
 
     if (state === "disconnected") {
-      onAbort("Disconnected from server.");
+      onAbort("Disconnected from server due to network issue.");
     }
   });
 
@@ -102,7 +102,7 @@ exports.createProducerAndBindEvents = async ({ transport, track, onAbort }) => {
   });
   producer.once("trackended", () => {
     debug("producer@trackended");
-    onAbort("Recording track ended.");
+    onAbort("Recording MediaStreamTrack has ended.");
   });
 
   return producer;
