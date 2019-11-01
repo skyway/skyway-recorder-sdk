@@ -51,8 +51,8 @@ Construct an object of type `Recorder`.
 
 | Name      | Type                             | Required           | Default | Description        |
 |:----------|:-----------------|:-------------------|:--------|:-------------------|
-| `apiKey`  | string           | :heavy_check_mark: |         |                    |
-| `options` | `options object` |                    |         |                    |
+| apiKey  | string           | :heavy_check_mark: |         |                    |
+| options | options object |                    |         |                    |
 
 ###### options object
   
@@ -142,5 +142,6 @@ The `abort` event is emitted when the following errors occured during a recordin
 - Recording track ended.
 
 
+[MediaStreamTrack]:https://w3c.github.io/webrtc-pc/#mediastreamtrack
 [RTCIceServer]:https://w3c.github.io/webrtc-pc/#dom-rtciceserver
 [RTCIceTransportPolicy]:https://w3c.github.io/webrtc-pc/#rtcicetransportpolicy-enum
