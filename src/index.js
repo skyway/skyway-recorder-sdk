@@ -7,7 +7,7 @@ const recordingServerHost = "http://localhost:8080";
 
 // copied from signaling server code
 const apiKeyRegExp = /^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/;
-const timestampRegExp = /^\d{13}$/;
+const timestampRegExp = /^\d{10}$/;
 
 exports.createRecorder = (apiKey, options = {}) => {
   debug("createRecorder() w/ options");
@@ -24,7 +24,7 @@ exports.createRecorder = (apiKey, options = {}) => {
   // validate options if not default
   if (auth !== null) {
     if (!timestampRegExp.test(auth.timestamp))
-      throw new TypeError("auth.timestamp must be a 13 digits unix tiemstamp!");
+      throw new TypeError("auth.timestamp must be a 10 digits unix tiemstamp!");
     if (!(auth.credential && typeof auth.credential === "string"))
       throw new TypeError("auth.credential must be a hash string!");
   }

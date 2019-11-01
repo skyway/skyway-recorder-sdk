@@ -27,8 +27,8 @@ describe("createRecorder(apiKey)", () => {
 describe("createRecorder(apiKey, options)", () => {
   test("should return client instance", () => {
     const cases = [
-      { auth: { timestamp: 1234567890123, credential: "password" } },
-      { auth: { timestamp: "1234567890123", credential: "password" } },
+      { auth: { timestamp: 1234567890, credential: "password" } },
+      { auth: { timestamp: "1234567890", credential: "password" } },
       { iceServers: [] },
       { iceServers: [{ urls: "stun:example.com" }] },
       { iceTransportPolicy: "relay" }
@@ -47,9 +47,9 @@ describe("createRecorder(apiKey, options)", () => {
     const cases = [
       [{}, "timestamp must"],
       [{ credential: "password" }, "timestamp must"],
-      [{ timestamp: 1234567890, credential: false }, "timestamp must"],
-      [{ timestamp: 1234567890123, credential: false }, "credential must"],
-      [{ timestamp: 1234567890123, credential: "" }, "credential must"]
+      [{ timestamp: 12345, credential: false }, "timestamp must"],
+      [{ timestamp: 1234567890, credential: false }, "credential must"],
+      [{ timestamp: 1234567890, credential: "" }, "credential must"]
     ];
 
     for (const [auth, message] of cases) {
