@@ -1,11 +1,10 @@
 version: 2
 jobs:
-  test:
+  build:
     docker:
       - image: skywayci/skyway-js-sdk
     steps:
       - checkout
-
       - run: npm ci
       - run: npm run lint
       - run: npm run test
