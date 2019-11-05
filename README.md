@@ -70,11 +70,11 @@ Construct an object of type `Recorder`.
 
 ###### options object
   
-| Name               | Type                                                    | Required           | Default | Description                                     |
-|:-------------------|:--------------------------------------------------------|:-------------------|:--------|:------------------------------------------------|
+| Name               | Type                                                    | Required           | Default | Description                                                                                              |
+|:-------------------|:--------------------------------------------------------|:-------------------|:--------|:---------------------------------------------------------------------------------------------------------|
 | auth               | auth object                                             |                    |         | Information to authenticate recording. If API key authentication is enabled, this parameter is required. |
 | iceServers         | array of [RTCIceServer][RTCIceServer]                   |                    |         | TURN servers that can be used by the ICE Agent. SkyWay ice servers are used by default.                  |
-| iceTransportPolicy | array of [RTCIceTransportPolicy][RTCIceTransportPolicy] |                    | 'all'   | Force TURN ('relay') or not ('all')                                                                      |
+| iceTransportPolicy | array of [RTCIceTransportPolicy][RTCIceTransportPolicy] |                    | `all`   | `all` and `relay` are supported. `relay` indicates ICE engine only use relay candidates.                 |
 
 ###### auth object
 It is calculated using the HMAC-SHA256 algorithm on the string `$timestamp`, with the secret key for the app.
@@ -89,7 +89,7 @@ The final value should be in base64 string format.
 An instance of type `Recorder`.
 
 ##### Exceptions
-If invalid parameters are given, `TypeError` is thrown.
+`TypeError` is thrown, if invalid parameters are given.
 
 ---
 
@@ -131,9 +131,14 @@ If the recording is successfully started, `recorder.state` changes to "recording
 The recording ID which is used as the uploading file path of the audio recording file.
 
 ##### Exceptions
-May throw `TypeError` or `InvalidStateError` as follows:
-- If invalid parameters are given, `TypeError` is thrown.
-- If `recorder.state` is already set to `recording`, `InvalidStateError` is thrown.
+
+- `TypeError` is thrown if invalid type for parameters are given.
+- `InvalidStateError` is thrown if `recorder.state` isn't `new`.
+- `RequestError` is thrown if invalid request parameter was given as follows:
+  - The application associated with the given `apiKey` does not found.
+  - The given credential does not match to computed credentials by SkyWay server.
+- `NetworkError` is thrown, if request for SkyWay backend server failed due to network issues.
+- `ServerError` is thrown, if the SkyWay server encountered an internal error.
 
 
 #### async recorder.stop()
@@ -148,7 +153,13 @@ Dashboard. The uploaded filename is equal to the recording ID.
 `undefined`
 
 ##### Exceptions
-If recorder.state is not `recording`, `InvalidStateError` is thrown.
+- `InvalidStateError` is thrown, if `recorder.state` is not `recording`.
+- `RequestError` is thrown if invalid request parameter was given as follows:
+  - The application associated with the given `apiKey` does not found.
+  - The given credential does not match to computed credentials by SkyWay server.
+- `NetworkError` is thrown, if request for SkyWay backend server failed due to network issues.
+- `ServerError` is thrown, if the SkyWay server encountered an internal error.
+
 
 #### Event: `abort`
 The `abort` event is emitted when the following errors occured during a recording.
