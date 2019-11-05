@@ -8,7 +8,7 @@ calls and automatically uploading recording files to Google Cloud Storage
 
 - Signup or login to your account.
 - Create or edit your application associated with your account.
-- Check "Enable recording feature" in the permission section.
+- Check `Enable recording feature` in the permission section.
 - Register a GCS bucket where the recording files will be uploaded.
 
 :warning: If uploading failed even once, SkyWay recording server disable the recording
@@ -152,12 +152,9 @@ The recording ID which is used as the uploading file path of the audio recording
 
 
 #### async recorder.stop()
-`recorder.stop()` stops recording.
-If the recording is successfully stoped, `recorder.state` changes to "closed".
+`recorder.stop()` stops recording. If the recording is successfully stoped, `recorder.state` changes to `closed`.
 
-After the recording is stopped, SkyWay recording server is going to upload the
-recording audio file into the bucket of Google Cloud Storage specified in SkyWay
-Dashboard. The uploaded filename is equal to the recording ID.
+After the recording is stopped, SkyWay recording server is going to upload the recording audio file into the bucket of Google Cloud Storage specified in SkyWay Dashboard. The uploaded filename is equal to the recording ID.
 
 ##### Return value
 `undefined`
