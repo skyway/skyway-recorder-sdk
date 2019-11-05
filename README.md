@@ -179,19 +179,19 @@ The `abort` event is emitted when the following errors occured during a recordin
 The `TypeError` class is used for reports errors that arise because a parameter has incorrect type.
 
 #### class InvalidStateError
-The `TypeError` class is used for reports errors that arise because a method is called with an invalid state.
+The `InvalidStateError` class is used for reports errors that arise because a method is called with an invalid state.
 
 #### class AbortError
 The `AbortError` class is used for reports errors that arise because a request is aborted. For example, the `AbortError` is thrown if an externally stopping the audio track being transmitted caused by the disconnection of microphones associated with the recording.
 
 #### class RequestError
-The `TypeError` class is used for reports errors that arise because invalid request parameters are given.
+The `RequestError` class is used for reports errors that arise because invalid request parameters are given.
 
 #### class NetworkError
-The `TypeError` class is used for reports errors that arise because a request failed due to network issues.
+The `NetworkError` class is used for reports errors that arise because a request failed due to network issues.
 
 #### class ServerError
-The `TypeError` class is used for reports errors that arise because a requested SkyWay server encountered an internal error.
+The `ServerError` class is used for reports errors that arise because a requested SkyWay server encountered an internal error.
 
 [MediaStreamTrack]:https://w3c.github.io/webrtc-pc/#mediastreamtrack
 [RTCIceServer]:https://w3c.github.io/webrtc-pc/#dom-rtciceserver
