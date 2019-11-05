@@ -11,7 +11,7 @@ calls and automatically uploading recording files to Google Cloud Storage
 - Check "Enable recording feature" in the permission section.
 - Register a GCS bucket where the recording files will be uploaded.
 
-Note: If uploading failed even once, SkyWay recording server disable the recording
+:warning: If uploading failed even once, SkyWay recording server disable the recording
 feature. You can check the current status of the recording feature on SkyWay Dashboard.
 
 ## API
@@ -77,7 +77,7 @@ Construct an object of type `Recorder`.
 | iceTransportPolicy | array of [RTCIceTransportPolicy][RTCIceTransportPolicy] |                    | `all`   | `all` and `relay` are supported. `relay` indicates ICE engine only use relay candidates.                 |
 
 ###### auth object
-It is calculated using the HMAC-SHA256 algorithm on the string `$timestamp`, with the secret key for the app.
+It is calculated using the HMAC-SHA256 algorithm on the string `timestamp`, with the secret key for the app.
 The final value should be in base64 string format.
 
 | Name       | Type   | Required           | Default | Description                                                                                  |
@@ -105,21 +105,21 @@ An instance of type `RecorderState`
 `RecorderState` represents the current state of an instance of Recorder.
 
 Transitions are:
-- createRecorder(apiKey, [options]): "new" [initial state]
-- start(track): "recording"
-- stop(): "closed"
+- createRecorder(apiKey, [options]): `new` [initial state]
+- start(track): `recording`
+- stop(): `closed`
 
 
 `RecorderState` transitions diagram is shown below.
 ```
 -- new Recorder(apiKey, [options]) --> "new" -- start(track) --> "recording" -- stop() --> "closed"
-                                                                          ^                    |
-                                                                          |___ start(track) ___|
 ```
+
+Note that recorder is not reuse to recording a track.
 
 #### async recorder.start(track)
 `recorder.start(track)` starts recording a given **audio** track.
-If the recording is successfully started, `recorder.state` changes to "recording".
+If the recording is successfully started, `recorder.state` changes to `recording`.
 
 ##### Parameters
 
@@ -132,11 +132,14 @@ The recording ID which is used as the uploading file path of the audio recording
 
 ##### Exceptions
 
-- `TypeError` is thrown if invalid type for parameters are given.
+- `TypeError` is thrown if invalid type for parameters are given as follows:
+  - `track` is not passed or falsy
+  - `track.kind` is not equal to `audio`. Note that `video` is not supported.
 - `InvalidStateError` is thrown if `recorder.state` isn't `new`.
 - `RequestError` is thrown if invalid request parameter was given as follows:
   - The application associated with the given `apiKey` does not found.
   - The given credential does not match to computed credentials by SkyWay server.
+  - etc.
 - `NetworkError` is thrown, if request for SkyWay backend server failed due to network issues.
 - `ServerError` is thrown, if the SkyWay server encountered an internal error.
 
