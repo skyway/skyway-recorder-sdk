@@ -120,7 +120,7 @@ Transitions are:
 -- new Recorder(apiKey, [options]) --> "new" -- start(track) --> "recording" -- stop() --> "closed"
 ```
 
-Note that recorder is not reuse to recording a track.
+Note that you can not reuse a recorder for recording tracks.
 
 #### async recorder.start(track)
 `recorder.start(track)` starts recording a given **audio** track.
