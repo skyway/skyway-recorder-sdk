@@ -68,10 +68,10 @@ Construct an object of type `Recorder`.
 
 ##### Parameters
 
-| Name    | Type             | Required           | Default | Description        |
-|:--------|:-----------------|:-------------------|:--------|:-------------------|
-| apiKey  | string           | :heavy_check_mark: |         |                    |
-| options | options object   |                    |         |                    |
+| Name    | Type             | Required           | Default | Description                            |
+|:--------|:-----------------|:-------------------|:--------|:---------------------------------------|
+| apiKey  | string           | :heavy_check_mark: |         | API key associated with you account.   |
+| options | options object   |                    |         | See [options object](#options-object). |
 
 ###### options object
   
