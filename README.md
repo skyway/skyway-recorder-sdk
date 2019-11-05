@@ -18,12 +18,12 @@ feature. You can check the current status of the recording feature on SkyWay Das
 
 ### Table of Contents
 
-- Example
-- function createRecorder(apiKey, [ options ])
-- class Recorder extends EventEmitter
-  - async recorder.start(track)
-  - async recorder.stop()
-  - Event: `abort`
+- [Example](Example)
+- [function createRecorder(apiKey, [ options ])](#function-createrecorderapikey--options-)
+- [class Recorder extends EventEmitter](#class-recorder-extends-eventemitter)
+  - [async recorder.start(track)](#async-recorderstarttrack)
+  - [async recorder.stop()](#async-recorderstop)
+  - [Event: `abort`](#event-abort)
   
 ---
 
