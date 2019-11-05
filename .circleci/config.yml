@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: skywayci/skyway-js-sdk
+      - image: riosu/docker-ubuntu16-node12-s3cmd
     steps:
       - checkout
       - run: npm ci
