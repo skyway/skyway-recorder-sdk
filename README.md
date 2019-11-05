@@ -1,8 +1,6 @@
 # skyway-recording-sdk
-
-skyway-recording-sdk provides audio recording API that enables you to record your
-calls and automatically uploading recording files to Google Cloud Storage
-(GCS).
+`skyway-recording-sdk` provides audio recording API.
+The recorded files will be uploaded to Google Cloud Storage(GCS).
 
 ## Enable recording feature on SkyWay Dashboard
 
@@ -11,8 +9,8 @@ calls and automatically uploading recording files to Google Cloud Storage
 - Check `Enable recording feature` in the permission section.
 - Register a GCS bucket where the recording files will be uploaded.
 
-:warning: If uploading failed even once, SkyWay recording server disable the recording
-feature. You can check the current status of the recording feature on SkyWay Dashboard.
+:warning: If uploading failed even once, SkyWay recording server disable the recording feature.
+You can check the current status of the recording feature on SkyWay Dashboard.
 
 ## API
 
