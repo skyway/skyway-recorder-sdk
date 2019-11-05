@@ -37,5 +37,5 @@ export declare const errors: {
   NotSupportedError: typeof NotSupportedError,
   NetworkError: typeof NetworkError,
   RequestError: typeof RequestError,
-  ServerError: typeof ServerError,
+  ServerError: typeof ServerError
 };
