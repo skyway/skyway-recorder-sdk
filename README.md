@@ -78,8 +78,8 @@ Construct an object of type `Recorder`.
 | Name               | Type                                                    | Required           | Default | Description                                                                                              |
 |:-------------------|:--------------------------------------------------------|:-------------------|:--------|:---------------------------------------------------------------------------------------------------------|
 | auth               | auth object                                             |                    |         | Information to authenticate recording. If API key authentication is enabled, this parameter is required. |
-| iceServers         | array of [RTCIceServer][RTCIceServer]                   |                    |         | TURN servers that can be used by the ICE Agent. SkyWay ice servers are used by default.                  |
-| iceTransportPolicy | array of [RTCIceTransportPolicy][RTCIceTransportPolicy] |                    | `all`   | `all` and `relay` are supported. `relay` indicates ICE engine only use relay candidates.                 |
+| iceServers         | [RTCIceServer][RTCIceServer][]                          |                    |         | TURN servers that can be used by the ICE Agent. SkyWay ice servers are used by default.                  |
+| iceTransportPolicy | [RTCIceTransportPolicy][RTCIceTransportPolicy][]        |                    | `all`   | `all` and `relay` are supported. `relay` indicates ICE engine only use relay candidates.                 |
 
 ###### auth object
 It is calculated using the HMAC-SHA256 algorithm on the string `timestamp`, with the secret key for the app.
