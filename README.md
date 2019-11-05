@@ -18,7 +18,7 @@ feature. You can check the current status of the recording feature on SkyWay Das
 
 ### Table of Contents
 
-- [Example](Example)
+- [Example](#example)
 - [function createRecorder(apiKey, [ options ])](#function-createrecorderapikey--options-)
 - [class Recorder extends EventEmitter](#class-recorder-extends-eventemitter)
   - [async recorder.start(track)](#async-recorderstarttrack)
