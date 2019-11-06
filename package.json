@@ -7,7 +7,7 @@
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "dev": "webpack -w",
-    "lint": "eslint .",
+    "lint": "eslint . && tsd",
     "test": "jest"
   },
   "author": "NTT Communications Corp.",
@@ -27,7 +27,14 @@
     "lolex": "^5.1.1",
     "node-fetch": "^2.6.0",
     "prettier": "^1.18.2",
+    "tsd": "^0.10.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
+  },
+  "tsd": {
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "lib": ["dom"]
+    }
   }
 }

@@ -9,7 +9,7 @@ declare class Recorder extends EventEmitter {
   stop(): Promise<void>;
 }
 
-interface RecorderOptions {
+export interface RecorderOptions {
   auth?: {
     timestamp: number;
     credential: string;
@@ -31,11 +31,11 @@ declare class ServerError extends Error {}
  */
 export declare function createRecorder(options?: RecorderOptions): Recorder;
 
-export declare const errors = {
-  AbortError: AbortError;
-  InvalidStateError: InvalidStateError;
-  NotSupportedError: NotSupportedError;
-  NetworkError: NetworkError;
-  RequestError: RequestError;
-  ServerError: ServerError;
+export declare const errors: {
+  AbortError: typeof AbortError,
+  InvalidStateError: typeof InvalidStateError,
+  NotSupportedError: typeof NotSupportedError,
+  NetworkError: typeof NetworkError,
+  RequestError: typeof RequestError,
+  ServerError: typeof ServerError
 };
