@@ -3,7 +3,6 @@
 The recorded files will be uploaded to Google Cloud Storage(GCS).
 
 ## Enable recording feature on SkyWay Dashboard
-
 - Signup or login to your account.
 - Create or edit your application associated with your account.
 - Check `Enable recording feature` in the permission section.
@@ -15,7 +14,6 @@ You can check the current status of the recording feature on SkyWay Dashboard.
 ## API
 
 ### Table of Contents
-
 - [Example](#example)
 - [function createRecorder(apiKey, [ options ])](#function-createrecorderapikey--options-)
 - [class Recorder extends EventEmitter](#class-recorder-extends-eventemitter)
@@ -29,10 +27,7 @@ You can check the current status of the recording feature on SkyWay Dashboard.
 - [class NetworkError](#class-networkerror)
 - [class ServerError](#class-servererror)
   
----
-
 ### Example
-
 ```js
 import { createRecorder } from "skyway-js-recorder";
 
@@ -60,20 +55,16 @@ import { createRecorder } from "skyway-js-recorder";
 })();
 ```
 
----
-
 ### function createRecorder(apiKey, [ options ])
 Construct an object of type `Recorder`.
 
 ##### Parameters
-
 | Name    | Type             | Required           | Default | Description                            |
 |:--------|:-----------------|:-------------------|:--------|:---------------------------------------|
 | apiKey  | string           | :heavy_check_mark: |         | API key associated with you account.   |
 | options | options object   |                    |         | See [options object](#options-object). |
 
 ###### options object
-  
 | Name               | Type                                                    | Required           | Default | Description                                                                                              |
 |:-------------------|:--------------------------------------------------------|:-------------------|:--------|:---------------------------------------------------------------------------------------------------------|
 | auth               | auth object                                             |                    |         | Information to authenticate recording. If API key authentication is enabled, this parameter is required. |
@@ -95,8 +86,6 @@ An instance of type `Recorder`.
 ##### Exceptions
 `TypeError` is thrown, if invalid parameters are given.
 
----
-
 ### class Recorder extends EventEmitter
 The `Recorder` class is used for recording a audio track via SkyWay recording server.
 
@@ -113,7 +102,6 @@ Transitions are:
 - start(track): `recording`
 - stop(): `closed`
 
-
 `RecorderState` transitions diagram is shown below.
 ```
 -- new Recorder(apiKey, [options]) --> "new" -- start(track) --> "recording" -- stop() --> "closed"
@@ -126,7 +114,6 @@ Transitions are:
 If the recording is successfully started, `recorder.state` changes to `recording`.
 
 ##### Parameters
-
 | Name  | Type                                 | Required           | Default | Description                  |
 |:------|:-------------------------------------|:-------------------|:--------|:-----------------------------|
 | track | [MediaStreamTrack][MediaStreamTrack] | :heavy_check_mark: |         | A MediaStreamTrack to record |
@@ -135,7 +122,6 @@ If the recording is successfully started, `recorder.state` changes to `recording
 The recording ID which is used as the uploading file path of the audio recording file.
 
 ##### Exceptions
-
 - `TypeError` is thrown if invalid type for parameters are given as follows:
   - `track` is not passed or falsy
   - `track.kind` is not equal to `audio`. Note that `video` is not supported.
