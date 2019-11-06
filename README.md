@@ -60,13 +60,13 @@ Construct an object of type `Recorder`.
 
 ##### Parameters
 | Name    | Type             | Required           | Default | Description                            |
-|:--------|:-----------------|:-------------------|:--------|:---------------------------------------|
+|:--------|:-----------------|:------------------:|:-------:|:---------------------------------------|
 | apiKey  | string           | :white_check_mark: |         | API key associated with you account.   |
 | options | options object   |                    |         | See [options object](#options-object). |
 
 ###### options object
 | Name               | Type                                                    | Required           | Default | Description                                                                                              |
-|:-------------------|:--------------------------------------------------------|:-------------------|:--------|:---------------------------------------------------------------------------------------------------------|
+|:-------------------|:--------------------------------------------------------|:------------------:|:-------:|:---------------------------------------------------------------------------------------------------------|
 | auth               | auth object                                             |                    |         | Information to authenticate recording. If API key authentication is enabled, this parameter is required. |
 | iceServers         | [RTCIceServer][RTCIceServer][]                          |                    |         | TURN servers that can be used by the ICE Agent. SkyWay ice servers are used by default.                  |
 | iceTransportPolicy | [RTCIceTransportPolicy][RTCIceTransportPolicy][]        |                    | `all`   | `all` and `relay` are supported. `relay` indicates ICE engine only use relay candidates.                 |
@@ -76,7 +76,7 @@ It is calculated using the HMAC-SHA256 algorithm on the string `timestamp`, with
 The final value should be in base64 string format.
 
 | Name       | Type   | Required           | Default | Description                                                                                  |
-|:-----------|:-------|:-------------------|:--------|:---------------------------------------------------------------------------------------------|
+|:-----------|:-------|:------------------:|:-------:|:---------------------------------------------------------------------------------------------|
 | credential | string | :white_check_mark: |         | The HMAC credential for API key authentication.                                              |
 | timestamp  | string | :white_check_mark: |         | The UNIX timestamp which used to calculate credential. <br> `timestamp` must be a 10 digits. |
 
@@ -115,7 +115,7 @@ If the recording is successfully started, `recorder.state` changes to `recording
 
 ##### Parameters
 | Name  | Type                                 | Required           | Default | Description                  |
-|:------|:-------------------------------------|:-------------------|:--------|:-----------------------------|
+|:------|:-------------------------------------|:------------------:|:-------:|:-----------------------------|
 | track | [MediaStreamTrack][MediaStreamTrack] | :white_check_mark: |         | A MediaStreamTrack to record |
 
 ##### Return value
