@@ -22,7 +22,6 @@ You can check the current status of the recording feature on SkyWay Dashboard.
   - [async recorder.start(track)](#async-recorderstarttrack)
   - [async recorder.stop()](#async-recorderstop)
   - [Event: `abort`](#event-abort)
-
 - [class TypeError](#class-typeerror)
 - [class InvalidStateError](#class-invalidstateerror)
 - [class AbortError](#class-aborterrror)
