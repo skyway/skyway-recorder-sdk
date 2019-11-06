@@ -2,8 +2,8 @@ const debug = require("debug")("skyway-recorder");
 const Client = require("./client");
 const Signaler = require("./signaler");
 
-// TODO: fix
-const recordingServerHost = "http://localhost:8080";
+// const RECORDING_SERVER_URL = "http://localhost:8080";
+const RECORDING_SERVER_URL = "https://recording.webrtc.ecl.ntt.com";
 
 // copied from signaling server code
 const apiKeyRegExp = /^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/;
@@ -39,7 +39,7 @@ exports.createRecorder = (apiKey, options = {}) => {
   }
 
   const signaler = new Signaler()
-    .setUrl(recordingServerHost)
+    .setUrl(RECORDING_SERVER_URL)
     .setHeader("X-Api-Key", apiKey);
   debug("signaler created");
 

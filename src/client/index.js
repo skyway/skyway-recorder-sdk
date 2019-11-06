@@ -11,6 +11,8 @@ const {
 } = require("./usecase");
 const { InvalidStateError, AbortError } = require("./../errors");
 
+const PING_INTERVAL = 15 * 1000; // 15 seconds
+
 class Client extends EventEmitter {
   constructor(signaler, { auth, iceServers, iceTransportPolicy }) {
     super();
@@ -74,7 +76,7 @@ class Client extends EventEmitter {
     const { id, stopPingTimer } = await startRecording({
       signaler: this._signaler,
       producerId: this._producer.id,
-      pingInterval: 1000 * 10 // 10 sec
+      pingInterval: PING_INTERVAL
     });
     debug("record started w/ id", id);
 
