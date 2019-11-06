@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: riosu/docker-ubuntu16-node12-s3cmd
+    steps:
+      - checkout
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build
