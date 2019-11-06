@@ -89,7 +89,7 @@ An instance of type `Recorder`.
 ### class Recorder extends EventEmitter
 The `Recorder` class is used for recording a audio track via SkyWay recording server.
 
-An instance of type `Recorder` should be constructed via createRecorder(apiKey, [options])
+An instance of type `Recorder` should be constructed via `createRecorder(apiKey, [options])`
 
 #### recorder.state **readonly**
 An instance of type `RecorderState`
