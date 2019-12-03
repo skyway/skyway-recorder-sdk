@@ -29,7 +29,7 @@ declare class ServerError extends Error {}
  * Exports
  *
  */
-export declare function createRecorder(options?: RecorderOptions): Recorder;
+export declare function createRecorder(apiKey: string, options?: RecorderOptions): Recorder;
 
 export declare const errors: {
   AbortError: typeof AbortError,
