@@ -5,13 +5,19 @@ import { createRecorder, errors } from ".";
 // import { expectType } from "tsd";
 import { AbortError, RecorderOptions } from ".";
 
-(async () => {
+async () => {
+  const apikey = "xxxxxx-xxxx-xxxxxxxx";
   const options: RecorderOptions = {};
   if (true) {
     options.auth = { timestamp: 1234567890, credential: "" };
-  };
+  }
 
-  const recorder = await createRecorder(options);
+  const recorder1 = await createRecorder(apikey, options);
+  const recorder2 = await createRecorder(apikey, options);
 
-  recorder.on("abort", (err: AbortError) => {});
-});
+  recorder1.on("abort", (err: AbortError) => {});
+  const track = await navigator.mediaDevices
+    .getUserMedia({ audio: true })
+    .then(s => s.getTracks()[0]);
+  await recorder2.start(track);
+};
