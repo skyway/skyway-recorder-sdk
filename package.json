@@ -16,25 +16,27 @@
     "custom-error-class": "^1.0.0",
     "debug": "^4.1.1",
     "eventemitter3": "^4.0.0",
-    "mediasoup-client": "^3.2.10"
+    "mediasoup-client": "^3.3.3"
   },
   "devDependencies": {
-    "eslint": "^6.6.0",
-    "eslint-config-prettier": "^6.5.0",
+    "eslint": "^6.7.1",
+    "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.1",
-    "fetch-mock": "^7.7.0",
+    "fetch-mock": "^8.0.0",
     "jest": "^24.9.0",
     "lolex": "^5.1.1",
     "node-fetch": "^2.6.0",
-    "prettier": "^1.18.2",
-    "tsd": "^0.10.0",
+    "prettier": "^1.19.1",
+    "tsd": "^0.11.0",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9"
+    "webpack-cli": "^3.3.10"
   },
   "tsd": {
     "compilerOptions": {
       "esModuleInterop": true,
-      "lib": ["dom"]
+      "lib": [
+        "dom"
+      ]
     }
   }
 }
