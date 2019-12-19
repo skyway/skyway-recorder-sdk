@@ -6,7 +6,7 @@
 - [errors](#errors)
 
 ### function createRecorder(apiKey, [ options ])
-Construct an object of type `[Recorder](#class-recorder-extends-eventemitter)`.
+Construct an object of type [Recorder](#class-recorder-extends-eventemitter).
 
 #### Parameters
 | Name    | Type             | Required           | Default | Description                            |
@@ -31,7 +31,7 @@ The final value should be in base64 string format.
 | timestamp  | string | :white_check_mark: |         | The UNIX timestamp which used to calculate credential. <br> `timestamp` must be a 10 digits. |
 
 #### Return value
-An instance of type `[Recorder](#class-recorder-extends-eventemitter)`.
+An instance of type [Recorder](#class-recorder-extends-eventemitter).
 
 #### Exceptions
 `TypeError` is thrown, if invalid parameters are given.
@@ -48,17 +48,6 @@ This object contains below members.
 - [class ServerError](#class-servererror)
 
 ## Class details
-
-- [class Recorder extends EventEmitter](#class-recorder-extends-eventemitter)
-  - [async recorder.start(track)](#async-recorderstarttrack)
-  - [async recorder.stop()](#async-recorderstop)
-  - [Event: `abort`](#event-abort)
-- [class TypeError](#class-typeerror)
-- [class InvalidStateError](#class-invalidstateerror)
-- [class AbortError](#class-aborterrror)
-- [class RequestError](#class-requesterror)
-- [class NetworkError](#class-networkerror)
-- [class ServerError](#class-servererror)
 
 ### class Recorder extends EventEmitter
 The `Recorder` class is used for recording a audio track via SkyWay recording server.
@@ -83,19 +72,19 @@ Transitions are:
 
 :warning: You can not reuse a recorder for recording tracks.
 
-### async recorder.start(track)
+#### async recorder.start(track)
 `recorder.start(track)` starts recording a given **audio** track.
 If the recording is successfully started, `recorder.state` changes to `recording`.
 
-#### Parameters
+##### Parameters
 | Name  | Type                                 | Required           | Default | Description                  |
 |:------|:-------------------------------------|:------------------:|:-------:|:-----------------------------|
 | track | [MediaStreamTrack][MediaStreamTrack] | :white_check_mark: |         | A MediaStreamTrack to record |
 
-#### Return value
+##### Return value
 The recording ID which is used as the uploading file path of the audio recording file.
 
-#### Exceptions
+##### Exceptions
 - `TypeError` is thrown if invalid type for parameters are given as follows:
   - `track` is not passed or falsy
   - `track.kind` is not equal to `audio`. Note that `video` is not supported.
@@ -108,15 +97,15 @@ The recording ID which is used as the uploading file path of the audio recording
 - `ServerError` is thrown, if the SkyWay server encountered an internal error.
 
 
-### async recorder.stop()
+#### async recorder.stop()
 `recorder.stop()` stops recording. If the recording is successfully stoped, `recorder.state` changes to `closed`.
 
 After the recording is stopped, SkyWay recording server is going to upload the recording audio file into the bucket of Google Cloud Storage specified in SkyWay Dashboard. The uploaded filename is equal to the recording ID.
 
-#### Return value
+##### Return value
 `undefined`
 
-#### Exceptions
+##### Exceptions
 - `InvalidStateError` is thrown, if `recorder.state` is not `recording`.
 - `RequestError` is thrown if invalid request parameter was given as follows:
   - The application associated with the given `apiKey` does not found.
@@ -124,8 +113,13 @@ After the recording is stopped, SkyWay recording server is going to upload the r
 - `NetworkError` is thrown, if request for SkyWay backend server failed due to network issues.
 - `ServerError` is thrown, if the SkyWay server encountered an internal error.
 
+##### Notes
 
-### Event: `abort`
+- `recorder.stop()` calls `track.stop()` internally
+  - you may want to call `track.clone()` before `recorder.start(track)`
+- if you call `recorder.stop()` too early after started, it may fail to record
+
+#### Event: `abort`
 The `abort` event is emitted when the following errors occured during a recording.
 
 - Disconnected from server for any reason. The possible causes include:
