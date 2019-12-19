@@ -22,7 +22,7 @@ npm i skyway-js-recorder
 
 CDN is also available.
 
-```
+```html
 <script src="https://cdn.webrtc.ecl.ntt.com/skyway-recorder-latest.js"></script>
 ```
 
@@ -62,5 +62,5 @@ You can get recorded audio file via `${API_KEY}/${RECORDING_ID}/audio.ogg` and `
 
 ## API
 
-See [API.md](./API.md) for details.
+See [API.md](./API.md) for more details.
 
