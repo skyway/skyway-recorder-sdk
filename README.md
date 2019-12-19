@@ -59,5 +59,5 @@ import { createRecorder } from "skyway-js-recorder";
 
 ## API
 
-See [API.md](./api.md) for details.
+See [API.md](./API.md) for details.
 
