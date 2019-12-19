@@ -33,7 +33,7 @@ async function isNewGitHubRelease(version, { GITHUB_TOKEN }) {
   try {
     await octokit.repos.getReleaseByTag({
       owner: 'skyway',
-      repo: 'skyway-js-sdk',
+      repo: 'skyway-recorder-sdk',
       tag: `v${version}`,
     });
   } catch (err) {
@@ -49,7 +49,7 @@ async function isNewGitHubRelease(version, { GITHUB_TOKEN }) {
 async function isNewNpmRelease(version) {
   const { stdout } = await execFile('npm', [
     'view',
-    'skyway-js',
+    'skyway-recorder',
     'versions',
     '--json',
   ]);

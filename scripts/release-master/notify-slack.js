@@ -6,6 +6,6 @@ module.exports = async function notifySlack(text, { NOTIFICATION_ENDOPOINT }) {
   console.log(text);
   return webhook.send({
     text,
-    username: 'JS-SDK release',
+    username: 'Recorder-SDK release',
   });
 };

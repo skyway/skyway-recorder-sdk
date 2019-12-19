@@ -29,8 +29,8 @@ module.exports = async function publishToGitHub(version, { GITHUB_TOKEN }) {
   console.log('');
 
   console.log('Upload release assets');
-  const sdkDev = fs.readFileSync('./dist/skyway.js');
-  const sdkMin = fs.readFileSync('./dist/skyway.min.js');
+  const sdkDev = fs.readFileSync('./dist/skyway-recorder.js');
+  const sdkMin = fs.readFileSync('./dist/skyway-recorder.min.js');
 
   await Promise.all([
     octokit.repos.uploadReleaseAsset({
@@ -39,7 +39,7 @@ module.exports = async function publishToGitHub(version, { GITHUB_TOKEN }) {
         'content-type': 'application/javascript',
       },
       url: upload_url,
-      name: 'skyway.js',
+      name: 'skyway-recorder.js',
       file: sdkDev,
     }),
     octokit.repos.uploadReleaseAsset({
@@ -48,7 +48,7 @@ module.exports = async function publishToGitHub(version, { GITHUB_TOKEN }) {
         'content-type': 'application/javascript',
       },
       url: upload_url,
-      name: 'skyway.min.js',
+      name: 'skyway-recorder.min.js',
       file: sdkMin,
     }),
   ]);

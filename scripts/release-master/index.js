@@ -1,8 +1,6 @@
 const { version } = require('../../package.json');
 const config = require('../config');
-const replaceExamplesApiKey = require('../shared/replace-examples-api-key');
 const uploadSdkToS3 = require('../shared/upload-sdk-to-s3');
-const uploadExamplesToS3 = require('../shared/upload-examples-to-s3');
 const isNewRelease = require('./is-new-release');
 const isReleaseReady = require('./is-release-ready');
 const publishToNpm = require('./publish-to-npm');
@@ -18,21 +16,8 @@ const notifySlack = require('./notify-slack');
     AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY,
     S3_SDK_BUCKET,
-    S3_EXAMPLES_BUCKET,
     NOTIFICATION_ENDOPOINT,
   } = config('master');
-
-  console.log('# Release examples');
-  console.log('## Replace API key');
-  await replaceExamplesApiKey(API_KEY);
-  console.log('');
-
-  console.log('## Upload to S3:master');
-  await uploadExamplesToS3(S3_EXAMPLES_BUCKET, {
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
-  });
-  console.log('');
 
   console.log('# Release SDK');
   console.log(`## Check v${version} has not released yet`);
@@ -40,7 +25,7 @@ const notifySlack = require('./notify-slack');
   if (!isNew) {
     console.log('## Notify to Slack');
     await notifySlack(
-      `The branch \`master\` updated!\nExamples are released to S3, but SDK is not.\nSee <${CIRCLE_BUILD_URL}|detail>`,
+      `The branch \`master\` updated!\nSee <${CIRCLE_BUILD_URL}|detail>`,
       { NOTIFICATION_ENDOPOINT }
     );
 
@@ -52,7 +37,7 @@ const notifySlack = require('./notify-slack');
   if (!isReady) {
     console.log('## Notify to Slack');
     await notifySlack(
-      `The branch \`master\` updated!\nExamples are released to S3, but SDK is not.\nSee <${CIRCLE_BUILD_URL}|detail>`,
+      `The branch \`master\` updated!\nSee <${CIRCLE_BUILD_URL}|detail>`,
       { NOTIFICATION_ENDOPOINT }
     );
 
@@ -76,7 +61,7 @@ const notifySlack = require('./notify-slack');
 
   console.log('## Notify to Slack');
   await notifySlack(
-    `The branch \`master\` updated!\nExamples and SDK are released to S3, SDK published to GitHub and npm.\nSee <${CIRCLE_BUILD_URL}|detail>`,
+    `The branch \`master\` updated! SDK published to GitHub and npm.\nSee <${CIRCLE_BUILD_URL}|detail>`,
     { NOTIFICATION_ENDOPOINT }
   );
   console.log('');
