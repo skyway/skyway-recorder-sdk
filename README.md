@@ -1,8 +1,11 @@
-# skyway-recording-sdk
-`skyway-recording-sdk` provides audio recording API.
+# SkyWay Recorder
+`skyway-js-recorder` provides audio recording API.
 The recorded files will be uploaded to Google Cloud Storage(GCS).
 
-## Enable recording feature on SkyWay Dashboard
+## Prerequisite
+
+You need to enable recording feature on SkyWay Dashboard.
+
 - Signup or login to your account.
 - Create or edit your application associated with your account.
 - Check `Enable recording feature` in the permission section.
@@ -11,23 +14,22 @@ The recorded files will be uploaded to Google Cloud Storage(GCS).
 :warning: If uploading failed even once, SkyWay recording server disable the recording feature.
 You can check the current status of the recording feature on SkyWay Dashboard.
 
-## API
+## Install
 
-### Table of Contents
-- [Example](#example)
-- [function createRecorder(apiKey, [ options ])](#function-createrecorderapikey--options-)
-- [class Recorder extends EventEmitter](#class-recorder-extends-eventemitter)
-  - [async recorder.start(track)](#async-recorderstarttrack)
-  - [async recorder.stop()](#async-recorderstop)
-  - [Event: `abort`](#event-abort)
-- [class TypeError](#class-typeerror)
-- [class InvalidStateError](#class-invalidstateerror)
-- [class AbortError](#class-aborterrror)
-- [class RequestError](#class-requesterror)
-- [class NetworkError](#class-networkerror)
-- [class ServerError](#class-servererror)
-  
-### Example
+```sh
+npm i skyway-js-recorder
+```
+
+CDN is also available.
+
+```
+<script src="https://cdn.webrtc.ecl.ntt.com/skyway-recorder-latest.js"></script>
+```
+
+You do NOT need to install SkyWay JS-SDK alongside.
+
+## Example
+
 ```js
 import { createRecorder } from "skyway-js-recorder";
 
@@ -41,8 +43,8 @@ import { createRecorder } from "skyway-js-recorder";
   // const recorder = createRecorder(apiKey, { iceServers: [], iceTransportPolicy: "relay" });
 
   const track = await navigator.mediaDevices
-  .getUserMedia({ audio: true })
-  .then(s => s.getTracks()[0]);
+    .getUserMedia({ audio: true })
+    .then(s => s.getAudioTracks()[0]);
 
   const res = await recorder.start(track);
   console.log(`Your recording id: ${res.id} is now recording...`);
@@ -54,6 +56,22 @@ import { createRecorder } from "skyway-js-recorder";
   console.log("uploading will be started soon...");
 })();
 ```
+
+## API
+
+### Table of Contents
+- [function createRecorder(apiKey, [ options ])](#function-createrecorderapikey--options-)
+- [class Recorder extends EventEmitter](#class-recorder-extends-eventemitter)
+  - [async recorder.start(track)](#async-recorderstarttrack)
+  - [async recorder.stop()](#async-recorderstop)
+  - [Event: `abort`](#event-abort)
+- [class TypeError](#class-typeerror)
+- [class InvalidStateError](#class-invalidstateerror)
+- [class AbortError](#class-aborterrror)
+- [class RequestError](#class-requesterror)
+- [class NetworkError](#class-networkerror)
+- [class ServerError](#class-servererror)
+  
 
 ### function createRecorder(apiKey, [ options ])
 Construct an object of type `Recorder`.
