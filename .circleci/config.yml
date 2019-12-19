@@ -37,7 +37,7 @@ jobs:
 
   release_master:
     docker:
-      - image: skywayci/skyway-js-sdk
+      - image: riosu/docker-ubuntu16-node12-s3cmd
     steps:
       - attach_workspace:
           at: .
