@@ -1,11 +1,12 @@
 # API
 
-`skyway-js-recorder` exports only one function and object.
+`skyway-js-recorder` exports only one function and error objects.
 
 - [function createRecorder(apiKey, [ options ])](#function-createrecorderapikey--options-)
 - [errors](#errors)
 
 ## function createRecorder(apiKey, [ options ])
+
 Construct an object of type [Recorder](#class-recorder-extends-eventemitter).
 
 ### Parameters
@@ -29,6 +30,15 @@ The final value should be in base64 string format.
 |:-----------|:-------|:------------------:|:-------:|:---------------------------------------------------------------------------------------------|
 | credential | string | :white_check_mark: |         | The HMAC credential for API key authentication.                                              |
 | timestamp  | string | :white_check_mark: |         | The UNIX timestamp which used to calculate credential. <br> `timestamp` must be a 10 digits. |
+
+Sample code to generate credential using Node.js looks like this.
+
+```js
+const credential = require("crypto")
+  .createHmac("sha256", YOUR_SECRET_KEY)
+  .update(timestamp)
+  .digest("base64");
+```
 
 ### Return value
 An instance of type [Recorder](#class-recorder-extends-eventemitter).
@@ -95,7 +105,6 @@ The recording ID which is used as the uploading file path of the audio recording
   - etc.
 - `NetworkError` is thrown, if request for SkyWay backend server failed due to network issues.
 - `ServerError` is thrown, if the SkyWay server encountered an internal error.
-
 
 ### async recorder.stop()
 `recorder.stop()` stops recording. If the recording is successfully stoped, `recorder.state` changes to `closed`.
