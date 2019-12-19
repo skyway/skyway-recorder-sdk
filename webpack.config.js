@@ -1,6 +1,6 @@
 const config = {
   mode: "development",
-  entry: { "skyway-recorder": "./src/index.js" },
+  entry: "./src/index.js",
   output: {
     libraryTarget: "umd",
     library: "SkyWayRecorder",
