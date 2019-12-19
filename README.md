@@ -1,5 +1,5 @@
 # SkyWay Recorder
-`skyway-js-recorder` provides audio recording API.
+`skyway-recorder` provides audio recording API.
 The recorded files will be uploaded to Google Cloud Storage(GCS).
 
 ## Prerequisite
@@ -17,7 +17,7 @@ You can check the current status of the recording feature on SkyWay Dashboard.
 ## Install
 
 ```sh
-npm i skyway-js-recorder
+npm i skyway-recorder
 ```
 
 CDN is also available.
@@ -31,7 +31,7 @@ You do NOT need to install SkyWay JS-SDK alongside.
 ## Example
 
 ```js
-import { createRecorder } from "skyway-js-recorder";
+import { createRecorder } from "skyway-recorder";
 
 (async () => {
   const apiKey = "5bea388b-3f95-4e1e-acb5-a34efdd0c480";
