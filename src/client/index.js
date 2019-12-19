@@ -34,10 +34,13 @@ class Client extends EventEmitter {
 
   async start(track) {
     debug("start()", track);
-    if (!track) throw new TypeError("Track is missing!");
+    if (!track) throw new TypeError("Audio track is missing!");
     if (track.kind !== "audio")
       throw new TypeError("Recording video track is not supported!");
-    if (this._state !== "new") throw new InvalidStateError("Already started!");
+    if (this._state !== "new")
+      throw new InvalidStateError(
+        "Already started! you need another recorder for new recording."
+      );
 
     const { routerRtpCapabilities, transportInfo } = await initializeSession({
       signaler: this._signaler,
@@ -91,7 +94,7 @@ class Client extends EventEmitter {
     if (this._state === "closed")
       throw new InvalidStateError("Already closed!");
     if (this._state !== "recording")
-      throw new InvalidStateError("Not yet started");
+      throw new InvalidStateError("Recorder not yet started!");
 
     this._state = "closed";
 
