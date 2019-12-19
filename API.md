@@ -1,6 +1,6 @@
 # API
 
-`skyway-js-recorder` exports only one function and error objects.
+This module exports only one function and error objects.
 
 - [function createRecorder(apiKey, [ options ])](#function-createrecorderapikey--options-)
 - [errors](#errors)
