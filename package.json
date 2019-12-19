@@ -1,9 +1,9 @@
 {
-  "name": "skyway-js-recording",
+  "name": "skyway-js-recorder",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/skyway-recording.js",
-  "types": "skyway-js-recording.d.ts",
+  "main": "dist/skyway-js-recorder.js",
+  "types": "skyway-js-recorder.d.ts",
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "dev": "webpack -w",
