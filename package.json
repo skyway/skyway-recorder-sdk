@@ -1,13 +1,14 @@
 {
-  "name": "skyway-js-recording",
+  "name": "skyway-recorder",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/skyway-recording.js",
-  "types": "skyway-js-recording.d.ts",
+  "main": "dist/skyway-recorder.js",
+  "types": "skyway-recorder.d.ts",
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "dev": "webpack -w",
     "lint": "eslint . && tsd",
+    "lint:fix": "eslint . --fix",
     "test": "jest"
   },
   "author": "NTT Communications Corp.",

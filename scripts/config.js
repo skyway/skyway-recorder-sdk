@@ -5,7 +5,6 @@ module.exports = function(env = 'staging') {
       SERVER_DOMAIN: 'stage.gcp.skyway.io',
       CDN_DOMAIN: 'cdn.stage.gcp.skyway.io',
       S3_SDK_BUCKET: 'eclrtc-cdn-gcp-staging',
-      S3_EXAMPLES_BUCKET: 'eclrtc-example-gcp-staging',
     },
     master: {
       API_KEY: '5bea388b-3f95-4e1e-acb5-a34efdd0c480',
@@ -13,7 +12,6 @@ module.exports = function(env = 'staging') {
       SERVER_DOMAIN: '',
       CDN_DOMAIN: '',
       S3_SDK_BUCKET: 'eclrtc-cdn-production',
-      S3_EXAMPLES_BUCKET: 'eclrtc-example-production',
     },
   }[env];
 

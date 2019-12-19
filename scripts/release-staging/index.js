@@ -4,11 +4,10 @@ const uploadSdkToS3 = require('../shared/upload-sdk-to-s3');
 
 (async function() {
   const {
-    API_KEY,
-    CDN_DOMAIN,
+    // API_KEY,
+    // CDN_DOMAIN,
     SERVER_DOMAIN,
     S3_SDK_BUCKET,
-    S3_EXAMPLES_BUCKET,
     AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY,
   } = config('staging');
