@@ -8,7 +8,7 @@ module.exports = async function fetchBaseBranch(prNumber, { GITHUB_TOKEN }) {
       base: { ref },
     },
   } = await octokit.pulls.get({
-    owner: 'nttcom-webcore',
+    owner: 'skyway',
     repo: 'skyway-recorder-sdk',
     pull_number: prNumber,
   });

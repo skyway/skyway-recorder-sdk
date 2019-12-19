@@ -19,7 +19,7 @@ module.exports = async function publishToGitHub(version, { GITHUB_TOKEN }) {
   const {
     data: { upload_url },
   } = await octokit.repos.createRelease({
-    owner: 'nttcom-webcore',
+    owner: 'skyway',
     repo: 'skyway-recorder-sdk',
     tag_name: `v${version}`,
     target_commitish: 'master',
