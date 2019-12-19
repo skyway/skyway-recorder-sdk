@@ -9,7 +9,7 @@ module.exports = async function publishToGitHub(version, { GITHUB_TOKEN }) {
   const changeLog = await getChangeLogSection(version);
   const body = [
     '```',
-    `https://cdn.webrtc.ecl.ntt.com/skyway-${version}.js`,
+    `https://cdn.webrtc.ecl.ntt.com/skyway-recorder-${version}.js`,
     '```',
     ...changeLog,
   ].join('\n');
@@ -19,8 +19,8 @@ module.exports = async function publishToGitHub(version, { GITHUB_TOKEN }) {
   const {
     data: { upload_url },
   } = await octokit.repos.createRelease({
-    owner: 'skyway',
-    repo: 'skyway-js-sdk',
+    owner: 'nttcom-webcore',
+    repo: 'skyway-recorder-sdk',
     tag_name: `v${version}`,
     target_commitish: 'master',
     name: `v${version}`,
