@@ -57,6 +57,9 @@ import { createRecorder } from "skyway-js-recorder";
 })();
 ```
 
+The `id` returned by `recorder.start()` is your recording id.
+You can get recorded audio file via `${API_KEY}/${RECORDING_ID}/audio.ogg` and `meta.json` in your GCS bucket.
+
 ## API
 
 See [API.md](./API.md) for details.
