@@ -1,6 +1,16 @@
 version: 2
 jobs:
-  build:
+  ensure_branch:
+    docker:
+      - image: riosu/docker-ubuntu16-node12-s3cmd
+    steps:
+      - checkout
+      - run:
+          name: Install extra deps for CI
+          command: npm install --no-save @octokit/rest
+      - run: node ./scripts/ensure-branch
+
+  test:
     docker:
       - image: riosu/docker-ubuntu16-node12-s3cmd
     steps:
@@ -9,3 +19,50 @@ jobs:
       - run: npm run lint
       - run: npm run test
       - run: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./*
+
+  release_staging:
+    docker:
+      - image: riosu/docker-ubuntu16-node12-s3cmd
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install extra deps for CI
+          command: npm install --no-save replace-in-file aws-sdk
+      - run: node ./scripts/release-staging
+
+  release_master:
+    docker:
+      - image: riosu/docker-ubuntu16-node12-s3cmd
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install extra deps for CI
+          command: npm install --no-save replace-in-file aws-sdk @octokit/rest @slack/client
+      - run: node ./scripts/release-master
+
+workflows:
+  version: 2
+  test_and_deploy:
+    jobs:
+      - ensure_branch
+      - test:
+          requires:
+            - ensure_branch
+      - release_staging:
+          requires:
+            - test
+          filters:
+            branches:
+              only: staging
+      - release_master:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
