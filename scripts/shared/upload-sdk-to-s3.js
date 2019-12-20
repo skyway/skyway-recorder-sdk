@@ -11,14 +11,14 @@ module.exports = async function uploadSdkToS3(
     secretAccessKey: AWS_SECRET_ACCESS_KEY
   });
 
-  const sdkDev = fs.readFileSync("./dist/skyway.js");
-  const sdkMin = fs.readFileSync("./dist/skyway.min.js");
+  const sdkDev = fs.readFileSync("./dist/skyway-recorder.js");
+  const sdkMin = fs.readFileSync("./dist/skyway-recorder.min.js");
 
   const uploads = [
-    { Key: `skyway-${version}.js`, Body: sdkDev },
-    { Key: `skyway-${version}.min.js`, Body: sdkMin },
-    { Key: `skyway-latest.js`, Body: sdkDev },
-    { Key: `skyway-latest.min.js`, Body: sdkMin }
+    { Key: `skyway-recorder-${version}.js`, Body: sdkDev },
+    { Key: `skyway-recorder-${version}.min.js`, Body: sdkMin },
+    { Key: `skyway-recorder-latest.js`, Body: sdkDev },
+    { Key: `skyway-recorder-latest.min.js`, Body: sdkMin }
   ];
 
   await Promise.all(

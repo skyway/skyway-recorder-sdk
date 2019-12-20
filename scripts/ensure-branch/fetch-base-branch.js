@@ -9,7 +9,7 @@ module.exports = async function fetchBaseBranch(prNumber, { GITHUB_TOKEN }) {
     }
   } = await octokit.pulls.get({
     owner: "skyway",
-    repo: "skyway-js-sdk",
+    repo: "skyway-recorder-sdk",
     pull_number: prNumber
   });
 

@@ -9,7 +9,7 @@ module.exports = async function publishToGitHub(version, { GITHUB_TOKEN }) {
   const changeLog = await getChangeLogSection(version);
   const body = [
     "```",
-    `https://cdn.webrtc.ecl.ntt.com/skyway-${version}.js`,
+    `https://cdn.webrtc.ecl.ntt.com/skyway-recorder-${version}.js`,
     "```",
     ...changeLog
   ].join("\n");
@@ -20,7 +20,7 @@ module.exports = async function publishToGitHub(version, { GITHUB_TOKEN }) {
     data: { upload_url }
   } = await octokit.repos.createRelease({
     owner: "skyway",
-    repo: "skyway-js-sdk",
+    repo: "skyway-recorder-sdk",
     tag_name: `v${version}`,
     target_commitish: "master",
     name: `v${version}`,
@@ -29,8 +29,8 @@ module.exports = async function publishToGitHub(version, { GITHUB_TOKEN }) {
   console.log("");
 
   console.log("Upload release assets");
-  const sdkDev = fs.readFileSync("./dist/skyway.js");
-  const sdkMin = fs.readFileSync("./dist/skyway.min.js");
+  const sdkDev = fs.readFileSync("./dist/skyway-recorder.js");
+  const sdkMin = fs.readFileSync("./dist/skyway-recorder.min.js");
 
   await Promise.all([
     octokit.repos.uploadReleaseAsset({
@@ -39,7 +39,7 @@ module.exports = async function publishToGitHub(version, { GITHUB_TOKEN }) {
         "content-type": "application/javascript"
       },
       url: upload_url,
-      name: "skyway.js",
+      name: "skyway-recorder.js",
       file: sdkDev
     }),
     octokit.repos.uploadReleaseAsset({
@@ -48,7 +48,7 @@ module.exports = async function publishToGitHub(version, { GITHUB_TOKEN }) {
         "content-type": "application/javascript"
       },
       url: upload_url,
-      name: "skyway.min.js",
+      name: "skyway-recorder.min.js",
       file: sdkMin
     })
   ]);
