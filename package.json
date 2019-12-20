@@ -11,7 +11,7 @@
     "test": "jest"
   },
   "author": "NTT Communications Corp.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "custom-error-class": "^1.0.0",
     "debug": "^4.1.1",
