@@ -1,73 +1,73 @@
-const readline = require('readline');
-const fs = require('fs');
-const Octokit = require('@octokit/rest');
+const readline = require("readline");
+const fs = require("fs");
+const Octokit = require("@octokit/rest");
 
 module.exports = async function publishToGitHub(version, { GITHUB_TOKEN }) {
   const octokit = new Octokit({ auth: `token ${GITHUB_TOKEN}` });
 
-  console.log('Extract section from CHANGELOG.md');
+  console.log("Extract section from CHANGELOG.md");
   const changeLog = await getChangeLogSection(version);
   const body = [
-    '```',
+    "```",
     `https://cdn.webrtc.ecl.ntt.com/skyway-${version}.js`,
-    '```',
-    ...changeLog,
-  ].join('\n');
-  console.log('');
+    "```",
+    ...changeLog
+  ].join("\n");
+  console.log("");
 
-  console.log('Create new release');
+  console.log("Create new release");
   const {
-    data: { upload_url },
+    data: { upload_url }
   } = await octokit.repos.createRelease({
-    owner: 'skyway',
-    repo: 'skyway-js-sdk',
+    owner: "skyway",
+    repo: "skyway-js-sdk",
     tag_name: `v${version}`,
-    target_commitish: 'master',
+    target_commitish: "master",
     name: `v${version}`,
-    body,
+    body
   });
-  console.log('');
+  console.log("");
 
-  console.log('Upload release assets');
-  const sdkDev = fs.readFileSync('./dist/skyway.js');
-  const sdkMin = fs.readFileSync('./dist/skyway.min.js');
+  console.log("Upload release assets");
+  const sdkDev = fs.readFileSync("./dist/skyway.js");
+  const sdkMin = fs.readFileSync("./dist/skyway.min.js");
 
   await Promise.all([
     octokit.repos.uploadReleaseAsset({
       headers: {
-        'content-length': sdkDev.length,
-        'content-type': 'application/javascript',
+        "content-length": sdkDev.length,
+        "content-type": "application/javascript"
       },
       url: upload_url,
-      name: 'skyway.js',
-      file: sdkDev,
+      name: "skyway.js",
+      file: sdkDev
     }),
     octokit.repos.uploadReleaseAsset({
       headers: {
-        'content-length': sdkMin.length,
-        'content-type': 'application/javascript',
+        "content-length": sdkMin.length,
+        "content-type": "application/javascript"
       },
       url: upload_url,
-      name: 'skyway.min.js',
-      file: sdkMin,
-    }),
+      name: "skyway.min.js",
+      file: sdkMin
+    })
   ]);
 };
 
 function getChangeLogSection(version) {
   return new Promise(resolve => {
     const rl = readline.createInterface({
-      input: fs.createReadStream('./CHANGELOG.md'),
-      crlfDelay: Infinity,
+      input: fs.createReadStream("./CHANGELOG.md"),
+      crlfDelay: Infinity
     });
 
     const lines = [];
     let isTargetStart = false;
     let isTargetEnd = false;
-    rl.on('line', line => {
+    rl.on("line", line => {
       // This logic depends on writing format of CHANGELOG.md
       // version line must be started with `## ` and described as `v1.0.0`
-      const isVersionLine = line.startsWith('## ');
+      const isVersionLine = line.startsWith("## ");
       const isVersionFound = line.includes(`v${version}`);
 
       if (isTargetEnd) {
@@ -88,6 +88,6 @@ function getChangeLogSection(version) {
       }
     });
 
-    rl.once('close', () => resolve(lines));
+    rl.once("close", () => resolve(lines));
   });
 }

@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const AWS = require('aws-sdk');
+const fs = require("fs");
+const path = require("path");
+const AWS = require("aws-sdk");
 
 module.exports = async function uploadSdkToS3(
   bucket,
@@ -8,20 +8,20 @@ module.exports = async function uploadSdkToS3(
 ) {
   const s3 = new AWS.S3({
     accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY
   });
 
-  const uploads = readdirRecurseSync('./examples')
+  const uploads = readdirRecurseSync("./examples")
     .filter(isContents)
     .map(filePath => {
       // eg. examples/_shared/key.js
-      const paths = filePath.split('/');
+      const paths = filePath.split("/");
       paths.shift();
 
       return {
-        Key: paths.join('/'),
+        Key: paths.join("/"),
         Body: fs.readFileSync(`./${filePath}`),
-        ContentType: getContentType(filePath),
+        ContentType: getContentType(filePath)
       };
     });
 
@@ -29,7 +29,7 @@ module.exports = async function uploadSdkToS3(
     uploads.map(upload => {
       const params = Object.assign(
         {
-          Bucket: bucket,
+          Bucket: bucket
         },
         upload
       );
@@ -57,22 +57,22 @@ function readdirRecurseSync(dName) {
 
 function isContents(filePath) {
   return (
-    filePath.endsWith('.html') ||
-    filePath.endsWith('.css') ||
-    filePath.endsWith('.js')
+    filePath.endsWith(".html") ||
+    filePath.endsWith(".css") ||
+    filePath.endsWith(".js")
   );
 }
 
 function getContentType(filePath) {
-  let cType = '';
-  if (filePath.endsWith('.html')) {
-    cType = 'text/html';
+  let cType = "";
+  if (filePath.endsWith(".html")) {
+    cType = "text/html";
   }
-  if (filePath.endsWith('.css')) {
-    cType = 'text/css';
+  if (filePath.endsWith(".css")) {
+    cType = "text/css";
   }
-  if (filePath.endsWith('.js')) {
-    cType = 'application/javascript';
+  if (filePath.endsWith(".js")) {
+    cType = "application/javascript";
   }
   return cType;
 }

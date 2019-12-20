@@ -1,4 +1,4 @@
-const { IncomingWebhook } = require('@slack/client');
+const { IncomingWebhook } = require("@slack/client");
 
 module.exports = async function notifySlack(text, { NOTIFICATION_ENDOPOINT }) {
   const webhook = new IncomingWebhook(NOTIFICATION_ENDOPOINT);
@@ -6,6 +6,6 @@ module.exports = async function notifySlack(text, { NOTIFICATION_ENDOPOINT }) {
   console.log(text);
   return webhook.send({
     text,
-    username: 'JS-SDK release',
+    username: "JS-SDK release"
   });
 };
