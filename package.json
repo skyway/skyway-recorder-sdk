@@ -1,6 +1,6 @@
 {
   "name": "skyway-recorder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/skyway-recorder.js",
   "types": "skyway-recorder.d.ts",
