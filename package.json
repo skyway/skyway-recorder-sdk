@@ -10,6 +10,17 @@
     "lint": "eslint . && tsd",
     "test": "jest"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skyway/skyway-recorder-sdk"
+  },
+  "files": [
+    "dist/skyway-recorder.js",
+    "skyway-recorder.d.ts",
+    "LICENSE",
+    "CHANGELOG.md",
+    "README.md"
+  ],
   "author": "NTT Communications Corp.",
   "license": "MIT",
   "dependencies": {
