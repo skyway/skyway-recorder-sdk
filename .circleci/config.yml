@@ -43,7 +43,7 @@ jobs:
           at: .
       - run:
           name: Install extra deps for CI
-          command: npm install --no-save replace-in-file@3.0.0 aws-sdk@2.597.0 @slack/client@5.0.2
+          command: npm install --no-save replace-in-file@3.0.0 aws-sdk@2.597.0 @octokit/rest@16.36.0 @slack/client@5.0.2
       - run: node ./scripts/release-master
 
 workflows:
