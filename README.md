@@ -1,4 +1,11 @@
 # SkyWay Recorder
+
+**This is the old SkyWay repository.  Please consider migrating to the [new SkyWay](<https://skyway.ntt.com>).**
+
+**これは旧SkyWayのリポジトリです。[新しいSkyWay](<https://skyway.ntt.com>)への移行をご検討ください。**
+
+---
+
 `skyway-recorder` provides audio recording API.
 The recorded files will be uploaded to Google Cloud Storage(GCS).
 
