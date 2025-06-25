@@ -21,7 +21,7 @@
     "CHANGELOG.md",
     "README.md"
   ],
-  "author": "NTT Communications Corp.",
+  "author": "NTT DOCOMO BUSINESS, Inc.",
   "license": "MIT",
   "dependencies": {
     "custom-error-class": "^1.0.0",
